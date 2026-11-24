@@ -1,0 +1,1247 @@
+{
+ "name": "C_selling_off",
+ "capitalPaise": 100000000,
+ "assets": [
+  {
+   "code": "VRDB",
+   "unitsPerLot": "1",
+   "initialPricePaise": 164200,
+   "supply": 639
+  },
+  {
+   "code": "ORBT",
+   "unitsPerLot": "1",
+   "initialPricePaise": 138500,
+   "supply": 758
+  },
+  {
+   "code": "AROG",
+   "unitsPerLot": "1",
+   "initialPricePaise": 97800,
+   "supply": 1074
+  },
+  {
+   "code": "SNFD",
+   "unitsPerLot": "1",
+   "initialPricePaise": 241500,
+   "supply": 435
+  },
+  {
+   "code": "VLCM",
+   "unitsPerLot": "1",
+   "initialPricePaise": 76400,
+   "supply": 1374
+  },
+  {
+   "code": "KNRK",
+   "unitsPerLot": "1",
+   "initialPricePaise": 31200,
+   "supply": 3365
+  },
+  {
+   "code": "TRNG",
+   "unitsPerLot": "1",
+   "initialPricePaise": 18600,
+   "supply": 5645
+  },
+  {
+   "code": "HLGP",
+   "unitsPerLot": "1",
+   "initialPricePaise": 52800,
+   "supply": 1989
+  },
+  {
+   "code": "GOLD",
+   "unitsPerLot": "0.1",
+   "initialPricePaise": 14317000,
+   "supply": 73
+  },
+  {
+   "code": "SILVER",
+   "unitsPerLot": "0.1",
+   "initialPricePaise": 18728000,
+   "supply": 56
+  }
+ ],
+ "phases": [
+  {
+   "number": 1,
+   "settings": {
+    "newsSensitivity": "0.15",
+    "demandSensitivity": "0.1",
+    "maxMove": "0.15",
+    "capShare": "1",
+    "rationing": false,
+    "allowSell": false,
+    "neutralRatio": "1"
+   },
+   "scores": {
+    "VRDB": "-0.26",
+    "ORBT": "-0.38",
+    "AROG": "0.05",
+    "SNFD": "-0.13",
+    "VLCM": "-0.01",
+    "KNRK": "0.2",
+    "TRNG": "-0.18",
+    "HLGP": "-0.19",
+    "GOLD": "-0.12",
+    "SILVER": "-0.32"
+   },
+   "overrides": {},
+   "joining": [
+    "alpha traders",
+    "beta capital",
+    "gamma fund",
+    "delta",
+    "epsilon",
+    "zeta",
+    "eta",
+    "theta",
+    "iota",
+    "kappa",
+    "lambda",
+    "mu",
+    "nu"
+   ],
+   "orders": [
+    {
+     "team": "alpha traders",
+     "lines": {
+      "VRDB": 100,
+      "ORBT": 50,
+      "SNFD": 40,
+      "VLCM": 200,
+      "KNRK": 500,
+      "HLGP": 300,
+      "GOLD": 10,
+      "SILVER": 3
+     }
+    },
+    {
+     "team": "beta capital",
+     "lines": {
+      "ORBT": 200,
+      "AROG": 150,
+      "TRNG": 1000
+     }
+    },
+    {
+     "team": "gamma fund",
+     "lines": {
+      "AROG": 300,
+      "KNRK": 1000,
+      "GOLD": 25
+     }
+    },
+    {
+     "team": "eta",
+     "lines": {
+      "VRDB": 50,
+      "AROG": 100
+     }
+    },
+    {
+     "team": "theta",
+     "lines": {
+      "SNFD": 100,
+      "VLCM": 100
+     }
+    },
+    {
+     "team": "kappa",
+     "lines": {
+      "GOLD": 25,
+      "SILVER": 20
+     }
+    },
+    {
+     "team": "lambda",
+     "lines": {}
+    },
+    {
+     "team": "mu",
+     "lines": {
+      "HLGP": 1000,
+      "GOLD": 25
+     }
+    },
+    {
+     "team": "nu",
+     "lines": {
+      "GOLD": 25
+     }
+    }
+   ],
+   "expected": {
+    "assets": {
+     "VRDB": {
+      "openingPricePaise": 164200,
+      "buyLots": 150,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 150,
+      "appliedChange": -0.115525821596244,
+      "newPricePaise": 145231,
+      "newLotPricePaise": 145231
+     },
+     "ORBT": {
+      "openingPricePaise": 138500,
+      "buyLots": 250,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 250,
+      "appliedChange": -0.124018469656992,
+      "newPricePaise": 121323,
+      "newLotPricePaise": 121323
+     },
+     "AROG": {
+      "openingPricePaise": 97800,
+      "buyLots": 550,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 550,
+      "appliedChange": -0.0412895716945996,
+      "newPricePaise": 93762,
+      "newLotPricePaise": 93762
+     },
+     "SNFD": {
+      "openingPricePaise": 241500,
+      "buyLots": 140,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 140,
+      "appliedChange": -0.087316091954023,
+      "newPricePaise": 220413,
+      "newLotPricePaise": 220413
+     },
+     "VLCM": {
+      "openingPricePaise": 76400,
+      "buyLots": 300,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 300,
+      "appliedChange": -0.0796659388646288,
+      "newPricePaise": 70314,
+      "newLotPricePaise": 70314
+     },
+     "KNRK": {
+      "openingPricePaise": 31200,
+      "buyLots": 1500,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 1500,
+      "appliedChange": -0.0254234769687964,
+      "newPricePaise": 30407,
+      "newLotPricePaise": 30407
+     },
+     "TRNG": {
+      "openingPricePaise": 18600,
+      "buyLots": 1000,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 1000,
+      "appliedChange": -0.109285208148804,
+      "newPricePaise": 16567,
+      "newLotPricePaise": 16567
+     },
+     "HLGP": {
+      "openingPricePaise": 52800,
+      "buyLots": 1300,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 1300,
+      "appliedChange": -0.063140522875817,
+      "newPricePaise": 49466,
+      "newLotPricePaise": 49466
+     },
+     "GOLD": {
+      "openingPricePaise": 14317000,
+      "buyLots": 110,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 110,
+      "appliedChange": 0.0326849315068493,
+      "newPricePaise": 14784950,
+      "newLotPricePaise": 1478495
+     },
+     "SILVER": {
+      "openingPricePaise": 18728000,
+      "buyLots": 23,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 23,
+      "appliedChange": -0.106928571428571,
+      "newPricePaise": 16725442,
+      "newLotPricePaise": 1672544
+     }
+    },
+    "teams": {
+     "alpha traders": {
+      "cashAfterPaise": 339600,
+      "lotsAfter": {
+       "VRDB": 100,
+       "ORBT": 50,
+       "AROG": 0,
+       "SNFD": 40,
+       "VLCM": 200,
+       "KNRK": 500,
+       "TRNG": 0,
+       "HLGP": 300,
+       "GOLD": 10,
+       "SILVER": 3
+      },
+      "valuePaise": 93654052,
+      "openValuePaise": null
+     },
+     "beta capital": {
+      "cashAfterPaise": 39030000,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 200,
+       "AROG": 150,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 1000,
+       "HLGP": 0,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 93925900,
+      "openValuePaise": null
+     },
+     "gamma fund": {
+      "cashAfterPaise": 3667500,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 300,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 1000,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 25,
+       "SILVER": 0
+      },
+      "valuePaise": 99165475,
+      "openValuePaise": null
+     },
+     "delta": {
+      "cashAfterPaise": 100000000,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 100000000,
+      "openValuePaise": null
+     },
+     "epsilon": {
+      "cashAfterPaise": 100000000,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 100000000,
+      "openValuePaise": null
+     },
+     "zeta": {
+      "cashAfterPaise": 100000000,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 100000000,
+      "openValuePaise": null
+     },
+     "eta": {
+      "cashAfterPaise": 82010000,
+      "lotsAfter": {
+       "VRDB": 50,
+       "ORBT": 0,
+       "AROG": 100,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 98647750,
+      "openValuePaise": null
+     },
+     "theta": {
+      "cashAfterPaise": 68210000,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 100,
+       "VLCM": 100,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 97282700,
+      "openValuePaise": null
+     },
+     "iota": {
+      "cashAfterPaise": 100000000,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 100000000,
+      "openValuePaise": null
+     },
+     "kappa": {
+      "cashAfterPaise": 26751500,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 25,
+       "SILVER": 20
+      },
+      "valuePaise": 97164755,
+      "openValuePaise": null
+     },
+     "lambda": {
+      "cashAfterPaise": 100000000,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 100000000,
+      "openValuePaise": null
+     },
+     "mu": {
+      "cashAfterPaise": 11407500,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 1000,
+       "GOLD": 25,
+       "SILVER": 0
+      },
+      "valuePaise": 97835875,
+      "openValuePaise": null
+     },
+     "nu": {
+      "cashAfterPaise": 64207500,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 25,
+       "SILVER": 0
+      },
+      "valuePaise": 101169875,
+      "openValuePaise": null
+     }
+    }
+   }
+  },
+  {
+   "number": 2,
+   "settings": {
+    "newsSensitivity": "0.15",
+    "demandSensitivity": "0.1",
+    "maxMove": "0.15",
+    "capShare": "1",
+    "rationing": false,
+    "allowSell": false,
+    "neutralRatio": "0"
+   },
+   "scores": {
+    "VRDB": "-0.59",
+    "ORBT": "-0.17",
+    "AROG": "-0.14",
+    "SNFD": "0.35",
+    "VLCM": "0.59",
+    "KNRK": "0.29",
+    "TRNG": "0.07",
+    "HLGP": "1.02",
+    "GOLD": "0.17",
+    "SILVER": "0.42"
+   },
+   "overrides": {
+    "VRDB": {
+     "type": "percent",
+     "value": "-20"
+    }
+   },
+   "joining": [],
+   "orders": [
+    {
+     "team": "delta",
+     "lines": {
+      "HLGP": 500
+     }
+    },
+    {
+     "team": "iota",
+     "lines": {
+      "GOLD": 40
+     }
+    },
+    {
+     "team": "lambda",
+     "lines": {}
+    }
+   ],
+   "expected": {
+    "assets": {
+     "VRDB": {
+      "openingPricePaise": 116185,
+      "buyLots": 0,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 0,
+      "appliedChange": -0.0885,
+      "newPricePaise": 105903,
+      "newLotPricePaise": 105903
+     },
+     "ORBT": {
+      "openingPricePaise": 121323,
+      "buyLots": 0,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 0,
+      "appliedChange": -0.0255,
+      "newPricePaise": 118229,
+      "newLotPricePaise": 118229
+     },
+     "AROG": {
+      "openingPricePaise": 93762,
+      "buyLots": 0,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 0,
+      "appliedChange": -0.021,
+      "newPricePaise": 91793,
+      "newLotPricePaise": 91793
+     },
+     "SNFD": {
+      "openingPricePaise": 220413,
+      "buyLots": 0,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 0,
+      "appliedChange": 0.0525,
+      "newPricePaise": 231985,
+      "newLotPricePaise": 231985
+     },
+     "VLCM": {
+      "openingPricePaise": 70314,
+      "buyLots": 0,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 0,
+      "appliedChange": 0.0885,
+      "newPricePaise": 76537,
+      "newLotPricePaise": 76537
+     },
+     "KNRK": {
+      "openingPricePaise": 30407,
+      "buyLots": 0,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 0,
+      "appliedChange": 0.0435,
+      "newPricePaise": 31730,
+      "newLotPricePaise": 31730
+     },
+     "TRNG": {
+      "openingPricePaise": 16567,
+      "buyLots": 0,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 0,
+      "appliedChange": 0.0105,
+      "newPricePaise": 16741,
+      "newLotPricePaise": 16741
+     },
+     "HLGP": {
+      "openingPricePaise": 49466,
+      "buyLots": 500,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 500,
+      "appliedChange": 0.15,
+      "newPricePaise": 56886,
+      "newLotPricePaise": 56886
+     },
+     "GOLD": {
+      "openingPricePaise": 14784950,
+      "buyLots": 40,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 40,
+      "appliedChange": 0.0802945205479452,
+      "newPricePaise": 15972100,
+      "newLotPricePaise": 1597210
+     },
+     "SILVER": {
+      "openingPricePaise": 16725442,
+      "buyLots": 0,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 0,
+      "appliedChange": 0.063,
+      "newPricePaise": 17779145,
+      "newLotPricePaise": 1777915
+     }
+    },
+    "teams": {
+     "alpha traders": {
+      "cashAfterPaise": 339600,
+      "lotsAfter": {
+       "VRDB": 100,
+       "ORBT": 50,
+       "AROG": 0,
+       "SNFD": 40,
+       "VLCM": 200,
+       "KNRK": 500,
+       "TRNG": 0,
+       "HLGP": 300,
+       "GOLD": 10,
+       "SILVER": 3
+      },
+      "valuePaise": 95664795,
+      "openValuePaise": 90749452
+     },
+     "beta capital": {
+      "cashAfterPaise": 39030000,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 200,
+       "AROG": 150,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 1000,
+       "HLGP": 0,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 93185750,
+      "openValuePaise": 93925900
+     },
+     "gamma fund": {
+      "cashAfterPaise": 3667500,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 300,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 1000,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 25,
+       "SILVER": 0
+      },
+      "valuePaise": 102865650,
+      "openValuePaise": 99165475
+     },
+     "delta": {
+      "cashAfterPaise": 75267000,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 500,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 103710000,
+      "openValuePaise": 100000000
+     },
+     "epsilon": {
+      "cashAfterPaise": 100000000,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 100000000,
+      "openValuePaise": 100000000
+     },
+     "zeta": {
+      "cashAfterPaise": 100000000,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 100000000,
+      "openValuePaise": 100000000
+     },
+     "eta": {
+      "cashAfterPaise": 82010000,
+      "lotsAfter": {
+       "VRDB": 50,
+       "ORBT": 0,
+       "AROG": 100,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 96484450,
+      "openValuePaise": 97195450
+     },
+     "theta": {
+      "cashAfterPaise": 68210000,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 100,
+       "VLCM": 100,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 99062200,
+      "openValuePaise": 97282700
+     },
+     "iota": {
+      "cashAfterPaise": 40860200,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 40,
+       "SILVER": 0
+      },
+      "valuePaise": 104748600,
+      "openValuePaise": 100000000
+     },
+     "kappa": {
+      "cashAfterPaise": 26751500,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 25,
+       "SILVER": 20
+      },
+      "valuePaise": 102240050,
+      "openValuePaise": 97164755
+     },
+     "lambda": {
+      "cashAfterPaise": 100000000,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 100000000,
+      "openValuePaise": 100000000
+     },
+     "mu": {
+      "cashAfterPaise": 11407500,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 1000,
+       "GOLD": 25,
+       "SILVER": 0
+      },
+      "valuePaise": 108223750,
+      "openValuePaise": 97835875
+     },
+     "nu": {
+      "cashAfterPaise": 64207500,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 25,
+       "SILVER": 0
+      },
+      "valuePaise": 104137750,
+      "openValuePaise": 101169875
+     }
+    }
+   }
+  },
+  {
+   "number": 3,
+   "settings": {
+    "newsSensitivity": "0.15",
+    "demandSensitivity": "0.1",
+    "maxMove": "0.15",
+    "capShare": "1",
+    "rationing": false,
+    "allowSell": false,
+    "neutralRatio": "0"
+   },
+   "scores": {
+    "VRDB": "0.05",
+    "ORBT": "0.16",
+    "AROG": "-0.14",
+    "SNFD": "-0.04",
+    "VLCM": "-0.38",
+    "KNRK": "-0.11",
+    "TRNG": "0.07",
+    "HLGP": "0.32",
+    "GOLD": "-0.3",
+    "SILVER": "-0.26"
+   },
+   "overrides": {},
+   "joining": [],
+   "orders": [
+    {
+     "team": "lambda",
+     "lines": {
+      "KNRK": 3000
+     }
+    },
+    {
+     "team": "eta",
+     "lines": {
+      "SILVER": 3
+     }
+    }
+   ],
+   "expected": {
+    "assets": {
+     "VRDB": {
+      "openingPricePaise": 105903,
+      "buyLots": 0,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 0,
+      "appliedChange": 0.0075,
+      "newPricePaise": 106697,
+      "newLotPricePaise": 106697
+     },
+     "ORBT": {
+      "openingPricePaise": 118229,
+      "buyLots": 0,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 0,
+      "appliedChange": 0.024,
+      "newPricePaise": 121066,
+      "newLotPricePaise": 121066
+     },
+     "AROG": {
+      "openingPricePaise": 91793,
+      "buyLots": 0,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 0,
+      "appliedChange": -0.021,
+      "newPricePaise": 89865,
+      "newLotPricePaise": 89865
+     },
+     "SNFD": {
+      "openingPricePaise": 231985,
+      "buyLots": 0,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 0,
+      "appliedChange": -0.006,
+      "newPricePaise": 230593,
+      "newLotPricePaise": 230593
+     },
+     "VLCM": {
+      "openingPricePaise": 76537,
+      "buyLots": 0,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 0,
+      "appliedChange": -0.057,
+      "newPricePaise": 72174,
+      "newLotPricePaise": 72174
+     },
+     "KNRK": {
+      "openingPricePaise": 31730,
+      "buyLots": 3000,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 3000,
+      "appliedChange": 0.0726530460624072,
+      "newPricePaise": 34035,
+      "newLotPricePaise": 34035
+     },
+     "TRNG": {
+      "openingPricePaise": 16741,
+      "buyLots": 0,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 0,
+      "appliedChange": 0.0105,
+      "newPricePaise": 16917,
+      "newLotPricePaise": 16917
+     },
+     "HLGP": {
+      "openingPricePaise": 56886,
+      "buyLots": 0,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 0,
+      "appliedChange": 0.048,
+      "newPricePaise": 59617,
+      "newLotPricePaise": 59617
+     },
+     "GOLD": {
+      "openingPricePaise": 15972100,
+      "buyLots": 0,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 0,
+      "appliedChange": -0.045,
+      "newPricePaise": 15253356,
+      "newLotPricePaise": 1525336
+     },
+     "SILVER": {
+      "openingPricePaise": 17779145,
+      "buyLots": 3,
+      "sellLots": 0,
+      "fillRatio": 1.0,
+      "executedBuyLots": 3,
+      "appliedChange": -0.0336428571428571,
+      "newPricePaise": 17181004,
+      "newLotPricePaise": 1718100
+     }
+    },
+    "teams": {
+     "alpha traders": {
+      "cashAfterPaise": 339600,
+      "lotsAfter": {
+       "VRDB": 100,
+       "ORBT": 50,
+       "AROG": 0,
+       "SNFD": 40,
+       "VLCM": 200,
+       "KNRK": 500,
+       "TRNG": 0,
+       "HLGP": 300,
+       "GOLD": 10,
+       "SILVER": 3
+      },
+      "valuePaise": 96031380,
+      "openValuePaise": 95664795
+     },
+     "beta capital": {
+      "cashAfterPaise": 39030000,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 200,
+       "AROG": 150,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 1000,
+       "HLGP": 0,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 93639950,
+      "openValuePaise": 93185750
+     },
+     "gamma fund": {
+      "cashAfterPaise": 3667500,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 300,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 1000,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 25,
+       "SILVER": 0
+      },
+      "valuePaise": 102795400,
+      "openValuePaise": 102865650
+     },
+     "delta": {
+      "cashAfterPaise": 75267000,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 500,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 105075500,
+      "openValuePaise": 103710000
+     },
+     "epsilon": {
+      "cashAfterPaise": 100000000,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 100000000,
+      "openValuePaise": 100000000
+     },
+     "zeta": {
+      "cashAfterPaise": 100000000,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 100000000,
+      "openValuePaise": 100000000
+     },
+     "eta": {
+      "cashAfterPaise": 76676255,
+      "lotsAfter": {
+       "VRDB": 50,
+       "ORBT": 0,
+       "AROG": 100,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 0,
+       "SILVER": 3
+      },
+      "valuePaise": 96151905,
+      "openValuePaise": 96484450
+     },
+     "theta": {
+      "cashAfterPaise": 68210000,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 100,
+       "VLCM": 100,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 98486700,
+      "openValuePaise": 99062200
+     },
+     "iota": {
+      "cashAfterPaise": 40860200,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 40,
+       "SILVER": 0
+      },
+      "valuePaise": 101873640,
+      "openValuePaise": 104748600
+     },
+     "kappa": {
+      "cashAfterPaise": 26751500,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 25,
+       "SILVER": 20
+      },
+      "valuePaise": 99246900,
+      "openValuePaise": 102240050
+     },
+     "lambda": {
+      "cashAfterPaise": 4810000,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 3000,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 0,
+       "SILVER": 0
+      },
+      "valuePaise": 106915000,
+      "openValuePaise": 100000000
+     },
+     "mu": {
+      "cashAfterPaise": 11407500,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 1000,
+       "GOLD": 25,
+       "SILVER": 0
+      },
+      "valuePaise": 109157900,
+      "openValuePaise": 108223750
+     },
+     "nu": {
+      "cashAfterPaise": 64207500,
+      "lotsAfter": {
+       "VRDB": 0,
+       "ORBT": 0,
+       "AROG": 0,
+       "SNFD": 0,
+       "VLCM": 0,
+       "KNRK": 0,
+       "TRNG": 0,
+       "HLGP": 0,
+       "GOLD": 25,
+       "SILVER": 0
+      },
+      "valuePaise": 102340900,
+      "openValuePaise": 104137750
+     }
+    }
+   }
+  }
+ ]
+}
