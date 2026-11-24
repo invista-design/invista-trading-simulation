@@ -9,8 +9,17 @@ export type DbOrTx = DB | Tx;
 
 const globalForDb = globalThis as unknown as { pool?: Pool; db?: DB };
 
+/**
+ * Pooled Postgres connection string. Accepts the standard names and, if the database was connected
+ * with a custom prefix (for example STORAGE_DATABASE_URL), any variable ending in DATABASE_URL.
+ */
 export function connectionString(): string {
-  const url = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+  const env = process.env;
+  const prefixed = Object.keys(env)
+    .filter((k) => /(^|_)DATABASE_URL$/.test(k) && /^postgres(ql)?:\/\//.test(env[k] ?? ""))
+    .sort()
+    .map((k) => env[k]);
+  const url = env.DATABASE_URL || env.POSTGRES_URL || prefixed[0];
   if (!url) throw new Error("DATABASE_URL is not set. Connect a Neon database to this Vercel project.");
   return url;
 }
