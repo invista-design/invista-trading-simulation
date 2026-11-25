@@ -16,7 +16,7 @@ export default async function Leaderboard({ searchParams }: { searchParams: SP }
   const isFinal = chosen === m.phases.at(-1)?.number;
   return (
     <>
-      <PageTitle title="Leaderboard" sub="Published by the organisers after each phase. Ranked by total portfolio value; ties follow rulebook 7.6." />
+      <PageTitle title="Leaderboard" sub="Published by the organisers after each phase. Ranked by total portfolio value; ties are broken as the rulebook sets out." />
       {published.length === 0 ? (
         <Empty>The first leaderboard appears after Phase 1 results are published.</Empty>
       ) : (

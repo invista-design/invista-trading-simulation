@@ -6,6 +6,8 @@ function inline(text: string): ReactNode[] {
   return parts.map((p, i) => (p.startsWith("**") && p.endsWith("**") ? <strong key={i}>{p.slice(2, -2)}</strong> : <span key={i}>{p}</span>));
 }
 
+const BULLET = /^( *)[-*]\s+/;
+
 export function Markdown({ source }: { source: string }) {
   const lines = source.replace(/\r/g, "").split("\n");
   const out: ReactNode[] = [];
@@ -46,12 +48,40 @@ export function Markdown({ source }: { source: string }) {
       i++;
       continue;
     }
-    if (/^[-*]\s+/.test(line)) {
-      const items: string[] = [];
-      while (i < lines.length && /^[-*]\s+/.test(lines[i])) items.push(lines[i++].replace(/^[-*]\s+/, ""));
+    if (BULLET.test(line)) {
+      // A list runs over blank lines until a line that is not a bullet. Items indented by 2 or more spaces nest under the item above.
+      const items: { text: string; children: string[] }[] = [];
+      while (i < lines.length) {
+        const l = lines[i];
+        if (!l.trim()) {
+          const next = lines.slice(i + 1).find((x) => x.trim());
+          if (next && BULLET.test(next)) {
+            i++;
+            continue;
+          }
+          break;
+        }
+        const m = BULLET.exec(l);
+        if (!m) break;
+        const text = l.replace(BULLET, "");
+        if (m[1].length >= 2 && items.length) items[items.length - 1].children.push(text);
+        else items.push({ text, children: [] });
+        i++;
+      }
       out.push(
-        <ul key={`u${i}`} className="my-2 list-disc pl-6">
-          {items.map((t, k) => <li key={k}>{inline(t)}</li>)}
+        <ul key={`u${i}`} className="my-3 list-disc space-y-2 pl-6">
+          {items.map((it, k) => (
+            <li key={k}>
+              {inline(it.text)}
+              {it.children.length ? (
+                <ul className="mt-2 list-[circle] space-y-1 pl-6">
+                  {it.children.map((c, j) => (
+                    <li key={j}>{inline(c)}</li>
+                  ))}
+                </ul>
+              ) : null}
+            </li>
+          ))}
         </ul>,
       );
       continue;

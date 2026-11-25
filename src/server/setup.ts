@@ -3,6 +3,7 @@ import { count, eq } from "drizzle-orm";
 import { getDb, schema, type DbOrTx } from "@/db";
 import { SEED_ASSETS, SEED_NEWS_KEYS, SEED_OVERRIDES, SEED_RULEBOOK } from "@/db/seed-data";
 import { audit } from "@/lib/audit";
+import { toBulletPoints } from "@/lib/rulebook";
 import { hashPassword } from "@/lib/auth";
 
 export async function organiserCount(db: DbOrTx = getDb()): Promise<number> {
@@ -16,7 +17,7 @@ export async function seedDefaults(db: DbOrTx, actor: string) {
   if (Number(existing?.n ?? 0) > 0) return false;
   await db.insert(schema.competition).values({ id: 1 });
   await seedMarket(db);
-  await db.insert(schema.rulebookVersions).values({ version: 1, content: SEED_RULEBOOK, note: "Participant Rulebook (final), as supplied", createdBy: actor });
+  await db.insert(schema.rulebookVersions).values({ version: 1, content: toBulletPoints(SEED_RULEBOOK), note: "Participant Rulebook (final), as supplied, in bullet points", createdBy: actor });
   await audit(db, { username: actor, action: "competition.seed", entity: "competition", reason: "Loaded workbook defaults at first setup" });
   return true;
 }

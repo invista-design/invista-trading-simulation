@@ -3,7 +3,7 @@ import { Card, Notice, PageTitle, PhaseBadge, ReasonField, sp, type SP } from "@
 import { getDb, schema } from "@/db";
 import { Dec } from "@/engine";
 import { dateTime } from "@/lib/format";
-import { RULEBOOK_CHANGES, suggestedRulebook } from "@/db/rulebook-update";
+import { RULEBOOK_CHANGES, plainText, suggestedRulebook } from "@/db/rulebook-update";
 import { publishRulebook, saveRules } from "@/server/admin-actions";
 import { getCompetition, getPhases } from "@/server/core";
 
@@ -33,7 +33,7 @@ export default async function RulesAdmin({ searchParams }: { searchParams: SP })
               Disqualify a team that ends a phase below the minimum number of executed trades
             </label>
           </div>
-          <p className="mt-3 text-xs text-muted">Fixed by design: whole lots only, no short selling, execution at the phase&apos;s opening prices, invalid orders blocked. Ties follow rulebook 7.6.</p>
+          <p className="mt-3 text-xs text-muted">Fixed by design: whole lots only, no short selling, execution at the phase&apos;s opening prices, invalid orders blocked. Ties follow the tie-break rule in the rulebook.</p>
         </Card>
         <Card title="Rules per phase" pad={false}>
           <div className="overflow-x-auto">
@@ -86,16 +86,16 @@ export default async function RulesAdmin({ searchParams }: { searchParams: SP })
         {suggestion && suggestion.applied.length > 0 ? (
           <div className="mb-4 rounded-lg border border-warn/40 bg-warnsoft p-3 text-sm">
             <p className="font-medium text-warn">
-              The published rulebook still describes the paper form: it allows skipping a phase and disqualifies teams for orders the website now blocks. Suggested update for {suggestion.applied.length} clauses:
+              The published rulebook still describes the paper form: it allows skipping a phase and disqualifies teams for orders the website now blocks. Suggested update for {suggestion.applied.length} rules:
             </p>
             <details className="mt-2">
               <summary className="cursor-pointer text-accent">Show the suggested wording</summary>
               <div className="mt-2 space-y-3">
                 {RULEBOOK_CHANGES.filter((c) => suggestion.applied.includes(c.clause)).map((c) => (
                   <div key={c.clause} className="rounded border border-line bg-panel p-2">
-                    <div className="text-xs font-semibold text-muted">Clause {c.clause}</div>
-                    <div className="mt-1 text-xs text-muted">Now: {c.from.replace(/\n+/g, " ")}</div>
-                    <div className="mt-1 text-xs">Suggested: {c.to}</div>
+                    <div className="text-xs font-semibold text-muted">{c.topic}</div>
+                    <div className="mt-1 text-xs text-muted">Now: {plainText(c.from)}</div>
+                    <div className="mt-1 text-xs">Suggested: {plainText(c.to)}</div>
                   </div>
                 ))}
               </div>
