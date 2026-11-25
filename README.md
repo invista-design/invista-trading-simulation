@@ -1,6 +1,6 @@
 # Market Mayhem - Trading Simulation: Dalal Street Challenge
 
-Competition platform for InVista, the investment society of International Management Institute New Delhi. It has 2 parts:
+Competition platform for InVista - The Investment Club, International Management Institute (IMI), Delhi. It has 2 parts:
 
 - **Participant portal**: team registration at `/register`, team login at `/login` with the team name and team code, markets, news announcements linked to the InVista Instagram page, trading terminal with a built-in calculator, portfolio, orders and leaderboards.
 - **Organiser admin panel** at `/admin` (sign in at `/organiser`): phases and round control, teams and logins, assets, news scores and market settings, trading rules and rulebook, orders, market analytics, leaderboards, reports and the audit log.
