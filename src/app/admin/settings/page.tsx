@@ -4,7 +4,8 @@ import { Card, Notice, PageTitle, ReasonField, sp, type SP } from "@/components/
 import { getDb, schema } from "@/db";
 import { requireOrganiser } from "@/lib/auth";
 import { dateTime } from "@/lib/format";
-import { addOrganiser, changeOwnPassword, saveSettings, setOrganiserActive } from "@/server/admin-actions";
+import { addOrganiser, changeOwnPassword, resetCompetitionAction, saveSettings, setOrganiserActive } from "@/server/admin-actions";
+import { resetPreview } from "@/server/reset";
 import { getCompetition } from "@/server/core";
 
 export const metadata = { title: "Settings" };
@@ -13,7 +14,7 @@ export default async function Settings({ searchParams }: { searchParams: SP }) {
   const q = await searchParams;
   const me = await requireOrganiser();
   const db = getDb();
-  const [comp, organisers] = await Promise.all([getCompetition(db), db.select().from(schema.users).where(eq(schema.users.role, "organiser"))]);
+  const [comp, organisers, counts] = await Promise.all([getCompetition(db), db.select().from(schema.users).where(eq(schema.users.role, "organiser")), resetPreview(db)]);
   return (
     <>
       <PageTitle title="Settings" />
@@ -89,6 +90,51 @@ export default async function Settings({ searchParams }: { searchParams: SP }) {
           </Card>
         </div>
       </div>
+
+      <Card title="Reset the competition" className="mt-4 border-down/40">
+        <div id="reset" className="grid gap-4 lg:grid-cols-2">
+          <div className="space-y-2 text-sm">
+            <p>
+              Returns the competition to the state before Phase 1 opened. Every order, refused attempt and phase result is deleted, disqualifications are cleared and every phase goes back to
+              Not started. Organiser accounts, the rulebook and the audit log are always kept.
+            </p>
+            <p className="font-medium text-down">This cannot be undone. Download the reports first if you need a copy of the current results.</p>
+            <ul className="mt-2 space-y-1 text-muted">
+              <li>Orders: {counts.orders}</li>
+              <li>Refused attempts: {counts.attempts}</li>
+              <li>Phase results: {counts.results}</li>
+              <li>Phases started: {counts.phasesStarted}</li>
+              <li>
+                Teams: {counts.teams} ({counts.disqualified} disqualified)
+              </li>
+              <li>Announcements: {counts.announcements}</li>
+            </ul>
+            <a className="btn btn-sm mt-1" href="/admin/reports">
+              Download reports
+            </a>
+          </div>
+          <form action={resetCompetitionAction} className="space-y-3">
+            <label className="flex items-start gap-2 text-sm">
+              <input type="checkbox" name="deleteTeams" className="mt-1" />
+              <span>Also delete all teams and their logins. Leave unticked to keep teams and passwords for the real event.</span>
+            </label>
+            <label className="flex items-start gap-2 text-sm">
+              <input type="checkbox" name="deleteAnnouncements" className="mt-1" />
+              <span>Also delete all announcements</span>
+            </label>
+            <label className="flex items-start gap-2 text-sm">
+              <input type="checkbox" name="restoreDefaults" className="mt-1" />
+              <span>Also restore the workbook&apos;s assets, prices, supply, news scores and phase rules, undoing any edits made on those pages</span>
+            </label>
+            <ReasonField placeholder="Reason, for example: clear test data before the event" />
+            <label className="block">
+              <span className="label">Type RESET to confirm</span>
+              <input name="confirm" required autoComplete="off" className="input" placeholder="RESET" />
+            </label>
+            <button className="btn btn-danger">Reset the competition</button>
+          </form>
+        </div>
+      </Card>
     </>
   );
 }

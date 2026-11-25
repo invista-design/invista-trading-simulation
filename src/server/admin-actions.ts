@@ -10,6 +10,7 @@ import { nameKey } from "@/lib/format";
 import { ensurePhaseAssetRows, getAssets, getPhases } from "./core";
 import { submitOrder } from "./orders";
 import * as P from "./phases";
+import { resetCompetition } from "./reset";
 
 // ---------- helpers ----------
 const str = (fd: FormData, k: string) => String(fd.get(k) ?? "").trim();
@@ -632,3 +633,16 @@ export async function setOrganiserActive(fd: FormData) {
   });
 }
 
+
+export async function resetCompetitionAction(fd: FormData) {
+  return act("/admin/settings", async (actor) => {
+    const reason = reasonOf(fd);
+    need(str(fd, "confirm") === "RESET", "Type RESET in capital letters to confirm the reset");
+    const opts = { deleteTeams: bool(fd, "deleteTeams"), deleteAnnouncements: bool(fd, "deleteAnnouncements"), restoreDefaults: bool(fd, "restoreDefaults") };
+    const b = await resetCompetition(actor, reason, opts);
+    const parts = [`${b.orders} orders`, `${b.attempts} refused attempts`, `${b.results} phase results`];
+    if (opts.deleteTeams) parts.push(`${b.teams} teams`);
+    if (opts.deleteAnnouncements) parts.push(`${b.announcements} announcements`);
+    return `Competition reset. Removed ${parts.join(", ").replace(/, ([^,]*)$/, " and $1")}. Every phase is back to Not started${opts.restoreDefaults ? " with the workbook defaults" : ""}.`;
+  });
+}

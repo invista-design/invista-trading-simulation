@@ -15,6 +15,14 @@ export async function seedDefaults(db: DbOrTx, actor: string) {
   const [existing] = await db.select({ n: count() }).from(schema.competition);
   if (Number(existing?.n ?? 0) > 0) return false;
   await db.insert(schema.competition).values({ id: 1 });
+  await seedMarket(db);
+  await db.insert(schema.rulebookVersions).values({ version: 1, content: SEED_RULEBOOK, note: "Participant Rulebook (final), as supplied", createdBy: actor });
+  await audit(db, { username: actor, action: "competition.seed", entity: "competition", reason: "Loaded workbook defaults at first setup" });
+  return true;
+}
+
+/** Inserts the workbook's assets, 3 phases with their settings, supply, overrides and news scores. Tables must be empty. */
+export async function seedMarket(db: DbOrTx) {
   const assetIds = new Map<string, string>();
   for (const a of SEED_ASSETS) {
     const [row] = await db
@@ -70,9 +78,6 @@ export async function seedDefaults(db: DbOrTx, actor: string) {
       });
     }
   }
-  await db.insert(schema.rulebookVersions).values({ version: 1, content: SEED_RULEBOOK, note: "Participant Rulebook (final), as supplied", createdBy: actor });
-  await audit(db, { username: actor, action: "competition.seed", entity: "competition", reason: "Loaded workbook defaults at first setup" });
-  return true;
 }
 
 export async function createFirstOrganiser(username: string, password: string, displayName: string) {

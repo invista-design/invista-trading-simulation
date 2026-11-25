@@ -44,6 +44,11 @@ export default async function PhasesPage({ searchParams }: { searchParams: SP })
   return (
     <>
       <PageTitle title="Phases and round control" sub="Open, pause, extend and close trading; calculate, confirm and publish results. Every action asks for a reason and is written to the audit log." />
+      {phases.some((p) => p.status !== "draft") ? (
+        <p className="-mt-2 mb-4 text-sm text-muted">
+          Finished testing? <a className="text-accent underline" href="/admin/settings#reset">Reset the competition</a> in Settings to clear every order and result and start again from Phase 1.
+        </p>
+      ) : null}
       <Notice ok={sp(q.ok)} err={sp(q.err)} />
 
       {recalc ? (
