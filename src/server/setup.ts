@@ -39,6 +39,7 @@ export async function seedMarket(db: DbOrTx) {
         initialPricePaise: a.initialPricePaise,
         baseSupply: a.baseSupply,
         displayOrder: a.displayOrder,
+        profile: a.profile,
       })
       .returning({ id: schema.assets.id });
     assetIds.set(a.code, row.id);

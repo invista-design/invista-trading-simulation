@@ -675,3 +675,25 @@ export async function resetCompetitionAction(fd: FormData) {
     return `Competition reset. Removed ${parts.join(", ").replace(/, ([^,]*)$/, " and $1")}. Every phase is back to Not started${opts.restoreDefaults ? " with the workbook defaults" : ""}.`;
   });
 }
+
+export async function saveCompanyProfiles(fd: FormData) {
+  return act("/admin/companies", async (actor) => {
+    const db = getDb();
+    const reason = reasonOf(fd);
+    const assets = await db.select().from(schema.assets);
+    const changes: { code: string; before: { name: string; profile: string }; after: { name: string; profile: string } }[] = [];
+    for (const a of assets) {
+      if (!fd.has(`name_${a.id}`)) continue;
+      const name = str(fd, `name_${a.id}`).replace(/\s+/g, " ");
+      const profile = str(fd, `profile_${a.id}`).replace(/\s+/g, " ").slice(0, 600);
+      need(name.length >= 2, `${a.code}: enter the asset name`);
+      if (name !== a.name || profile !== a.profile) changes.push({ code: a.code, before: { name: a.name, profile: a.profile }, after: { name, profile } });
+    }
+    need(changes.length > 0, "Nothing changed");
+    await db.transaction(async (tx) => {
+      for (const c of changes) await tx.update(schema.assets).set(c.after).where(eq(schema.assets.code, c.code));
+      await audit(tx, { username: actor, action: "assets.profiles", entity: "asset", entityId: changes.map((c) => c.code).join(", "), reason, before: changes.map((c) => ({ code: c.code, ...c.before })), after: changes.map((c) => ({ code: c.code, ...c.after })) });
+    });
+    return `Saved ${changes.length} company ${changes.length === 1 ? "profile" : "profiles"}`;
+  });
+}

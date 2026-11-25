@@ -1,0 +1,10 @@
+UPDATE "assets" SET "profile" = 'Private sector bank. Large in vehicle loans and loans to small businesses.' WHERE "code" = 'VRDB' AND "profile" = '';--> statement-breakpoint
+UPDATE "assets" SET "profile" = 'Information technology services. Most revenue comes from clients in the United States, many of them banks and insurers. Many of its engineers work in the United States on work visas.' WHERE "code" = 'ORBT' AND "profile" = '';--> statement-breakpoint
+UPDATE "assets" SET "profile" = 'Makes generic (unbranded) medicines. Close to half of its sales come from the United States. Plants at Baddi (tablets) and Dahej (injections).' WHERE "code" = 'AROG' AND "profile" = '';--> statement-breakpoint
+UPDATE "assets" SET "profile" = 'Packaged foods, noodles and snacks. A Swiss parent company owns a majority stake and licenses its brands to Sunfield.' WHERE "code" = 'SNFD' AND "profile" = '';--> statement-breakpoint
+UPDATE "assets" SET "profile" = 'India''s largest maker of small cars. Also owns a luxury car brand based in the United Kingdom that sells a large share of its cars in the United States.' WHERE "code" = 'VLCM' AND "profile" = '';--> statement-breakpoint
+UPDATE "assets" SET "profile" = 'Steel maker. Sells most of its steel in India and competes with imports, mainly from China.' WHERE "code" = 'KNRK' AND "profile" = '';--> statement-breakpoint
+UPDATE "assets" SET "profile" = 'India''s second largest mobile operator. Financially strong, with low debt compared with its rivals.' WHERE "code" = 'TRNG' AND "profile" = '';--> statement-breakpoint
+UPDATE "assets" SET "profile" = 'Builds and runs solar and wind farms in India. Sells power under 25-year contracts.' WHERE "code" = 'HLGP' AND "profile" = '';--> statement-breakpoint
+UPDATE "assets" SET "profile" = 'Priced at the Indian bullion rate, which includes import duty.' WHERE "code" = 'GOLD' AND "profile" = '';--> statement-breakpoint
+UPDATE "assets" SET "profile" = 'Priced at the Indian bullion rate, which includes import duty. Used in jewellery, solar panels and electronics.' WHERE "code" = 'SILVER' AND "profile" = '';

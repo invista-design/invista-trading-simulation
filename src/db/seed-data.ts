@@ -4,6 +4,7 @@
 export const SEED_ASSETS = [
   {
     "code": "VRDB",
+    "profile": "Private sector bank. Large in vehicle loans and loans to small businesses.",
     "name": "Vardhan Bank Limited",
     "assetType": "Stock",
     "sector": "Banking",
@@ -16,6 +17,7 @@ export const SEED_ASSETS = [
   },
   {
     "code": "ORBT",
+    "profile": "Information technology services. Most revenue comes from clients in the United States, many of them banks and insurers. Many of its engineers work in the United States on work visas.",
     "name": "Orbit Infotech Limited",
     "assetType": "Stock",
     "sector": "Information technology",
@@ -28,6 +30,7 @@ export const SEED_ASSETS = [
   },
   {
     "code": "AROG",
+    "profile": "Makes generic (unbranded) medicines. Close to half of its sales come from the United States. Plants at Baddi (tablets) and Dahej (injections).",
     "name": "Arogya Pharma Limited",
     "assetType": "Stock",
     "sector": "Pharmaceuticals",
@@ -40,6 +43,7 @@ export const SEED_ASSETS = [
   },
   {
     "code": "SNFD",
+    "profile": "Packaged foods, noodles and snacks. A Swiss parent company owns a majority stake and licenses its brands to Sunfield.",
     "name": "Sunfield Consumer Limited",
     "assetType": "Stock",
     "sector": "Consumer goods",
@@ -52,6 +56,7 @@ export const SEED_ASSETS = [
   },
   {
     "code": "VLCM",
+    "profile": "India's largest maker of small cars. Also owns a luxury car brand based in the United Kingdom that sells a large share of its cars in the United States.",
     "name": "Veloce Motors Limited",
     "assetType": "Stock",
     "sector": "Automobiles",
@@ -64,6 +69,7 @@ export const SEED_ASSETS = [
   },
   {
     "code": "KNRK",
+    "profile": "Steel maker. Sells most of its steel in India and competes with imports, mainly from China.",
     "name": "Konark Steel Limited",
     "assetType": "Stock",
     "sector": "Steel",
@@ -76,6 +82,7 @@ export const SEED_ASSETS = [
   },
   {
     "code": "TRNG",
+    "profile": "India's second largest mobile operator. Financially strong, with low debt compared with its rivals.",
     "name": "Tarang Telecom Limited",
     "assetType": "Stock",
     "sector": "Telecommunications",
@@ -88,6 +95,7 @@ export const SEED_ASSETS = [
   },
   {
     "code": "HLGP",
+    "profile": "Builds and runs solar and wind farms in India. Sells power under 25-year contracts.",
     "name": "Helios Green Power Limited",
     "assetType": "Stock",
     "sector": "Renewable energy",
@@ -100,6 +108,7 @@ export const SEED_ASSETS = [
   },
   {
     "code": "GOLD",
+    "profile": "Priced at the Indian bullion rate, which includes import duty.",
     "name": "Gold",
     "assetType": "Commodity",
     "sector": "Precious metals",
@@ -112,6 +121,7 @@ export const SEED_ASSETS = [
   },
   {
     "code": "SILVER",
+    "profile": "Priced at the Indian bullion rate, which includes import duty. Used in jewellery, solar panels and electronics.",
     "name": "Silver",
     "assetType": "Commodity",
     "sector": "Precious metals",
