@@ -45,7 +45,7 @@ export function PriceChart({ data }: { data: { label: string; rupees: number }[]
   );
 }
 
-const palette = ["#4d8dff", "#2bd17e", "#f3a93b", "#b07cff", "#ff7a59", "#22c3d6", "#e05fa0", "#9bb547", "#d4af37", "#a8b3c7", "#6c7a96"];
+const palette = ["#c9a35c", "#2bd17e", "#7f6df2", "#ff7a59", "#22c3d6", "#e05fa0", "#9bb547", "#f3a93b", "#b07cff", "#a8b3c7", "#6c7a96"];
 
 export function AllocationChart({ data }: { data: { name: string; rupees: number }[] }) {
   const total = data.reduce((s, d) => s + d.rupees, 0) || 1;

@@ -56,7 +56,7 @@ export default async function SetupPage({ searchParams }: { searchParams: SP }) 
           </div>
         ) : organisers > 0 ? (
           <div className="card p-5 text-sm">
-            Setup is already complete. <Link className="text-accent underline" href="/login">Sign in</Link>.
+            Setup is already complete. <Link className="text-accent underline" href="/organiser">Organiser sign-in</Link>.
           </div>
         ) : !tokenReady ? (
           <div className="card p-5 text-sm">

@@ -6,12 +6,16 @@ import { redirect } from "next/navigation";
 import { cache } from "react";
 import { and, eq, gt, lt, sql } from "drizzle-orm";
 import { getDb, schema } from "@/db";
+import { nameKey } from "@/lib/format";
 
 const scrypt = promisify(crypto.scrypt) as (pw: string, salt: Buffer, len: number, opts: crypto.ScryptOptions) => Promise<Buffer>;
 const COOKIE = "ts_session";
 const SESSION_HOURS = 72;
 const MAX_FAILED = 10;
 const LOCK_MINUTES = 5;
+/** Team codes are short, so wrong guesses are throttled harder: 5 wrong codes pause that team's login for 2 minutes. */
+const TEAM_MAX_FAILED = 5;
+const TEAM_LOCK_MINUTES = 2;
 
 export interface SessionUser {
   id: string;
@@ -47,26 +51,19 @@ const tokenId = (token: string) => crypto.createHash("sha256").update(token).dig
 
 export type LoginResult = { ok: true; user: SessionUser } | { ok: false; message: string };
 
-export async function login(username: string, password: string): Promise<LoginResult> {
+type UserRow = typeof schema.users.$inferSelect;
+const lockedMessage = (until: Date) => `Too many incorrect attempts. Try again after ${until.toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit" })}`;
+
+async function recordFailure(u: UserRow, max: number, lockMinutes: number) {
+  const failed = u.failedLogins + 1;
+  await getDb()
+    .update(schema.users)
+    .set({ failedLogins: failed >= max ? 0 : failed, lockedUntil: failed >= max ? new Date(Date.now() + lockMinutes * 60_000) : null })
+    .where(eq(schema.users.id, u.id));
+}
+
+async function startSession(u: UserRow): Promise<SessionUser> {
   const db = getDb();
-  const uname = username.trim().toLowerCase();
-  const [u] = await db.select().from(schema.users).where(eq(schema.users.username, uname)).limit(1);
-  const generic = "Incorrect username or password";
-  if (!u || !u.active) {
-    await verifyPassword(password, "scrypt$16384$8$1$AAAAAAAAAAAAAAAAAAAAAA==$AAAA"); // equalise timing
-    return { ok: false, message: generic };
-  }
-  if (u.lockedUntil && u.lockedUntil > new Date()) {
-    return { ok: false, message: `Too many failed attempts. Try again after ${u.lockedUntil.toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata" })}` };
-  }
-  if (!(await verifyPassword(password, u.passwordHash))) {
-    const failed = u.failedLogins + 1;
-    await db
-      .update(schema.users)
-      .set({ failedLogins: failed >= MAX_FAILED ? 0 : failed, lockedUntil: failed >= MAX_FAILED ? new Date(Date.now() + LOCK_MINUTES * 60_000) : null })
-      .where(eq(schema.users.id, u.id));
-    return { ok: false, message: generic };
-  }
   const token = crypto.randomBytes(32).toString("base64url");
   const expiresAt = new Date(Date.now() + SESSION_HOURS * 3600_000);
   await db.insert(schema.sessions).values({ id: tokenId(token), userId: u.id, expiresAt });
@@ -74,7 +71,49 @@ export async function login(username: string, password: string): Promise<LoginRe
   await db.delete(schema.sessions).where(lt(schema.sessions.expiresAt, new Date()));
   const jar = await cookies();
   jar.set(COOKIE, token, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", expires: expiresAt });
-  return { ok: true, user: { id: u.id, username: u.username, role: u.role, teamId: u.teamId, displayName: u.displayName } };
+  return { id: u.id, username: u.username, role: u.role, teamId: u.teamId, displayName: u.displayName };
+}
+
+/** Organiser sign-in with username and password. */
+export async function login(username: string, password: string): Promise<LoginResult> {
+  const db = getDb();
+  const uname = username.trim().toLowerCase();
+  const [u] = await db.select().from(schema.users).where(eq(schema.users.username, uname)).limit(1);
+  const generic = "Incorrect username or password";
+  if (!u || !u.active || u.role !== "organiser") {
+    await verifyPassword(password, "scrypt$16384$8$1$AAAAAAAAAAAAAAAAAAAAAA==$AAAA"); // equalise timing
+    return { ok: false, message: generic };
+  }
+  if (u.lockedUntil && u.lockedUntil > new Date()) return { ok: false, message: lockedMessage(u.lockedUntil) };
+  if (!(await verifyPassword(password, u.passwordHash))) {
+    await recordFailure(u, MAX_FAILED, LOCK_MINUTES);
+    return { ok: false, message: generic };
+  }
+  return { ok: true, user: await startSession(u) };
+}
+
+/** Team sign-in with the registered team name (case and extra spaces ignored) and the team code. */
+export async function loginTeam(teamName: string, code: string): Promise<LoginResult> {
+  const db = getDb();
+  const generic = "Team name or team code is incorrect";
+  const rows = await db
+    .select({ team: schema.teams, user: schema.users })
+    .from(schema.teams)
+    .innerJoin(schema.users, eq(schema.users.teamId, schema.teams.id))
+    .where(eq(schema.teams.nameKey, nameKey(teamName)))
+    .limit(1);
+  const row = rows[0];
+  if (!row) return { ok: false, message: generic };
+  const { team, user } = row;
+  if (user.lockedUntil && user.lockedUntil > new Date()) return { ok: false, message: lockedMessage(user.lockedUntil) };
+  const given = Buffer.from(code.trim().toUpperCase());
+  const stored = Buffer.from(team.code);
+  if (given.length !== stored.length || !crypto.timingSafeEqual(given, stored)) {
+    await recordFailure(user, TEAM_MAX_FAILED, TEAM_LOCK_MINUTES);
+    return { ok: false, message: generic };
+  }
+  if (!user.active) return { ok: false, message: "Login access for this team is switched off. Contact the organisers" };
+  return { ok: true, user: await startSession(user) };
 }
 
 export async function logout(): Promise<void> {
@@ -102,7 +141,7 @@ export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
 
 export async function requireOrganiser(): Promise<SessionUser> {
   const u = await getSessionUser();
-  if (!u) redirect("/login?next=/admin");
+  if (!u) redirect("/organiser");
   if (u.role !== "organiser") redirect("/dashboard");
   return u;
 }

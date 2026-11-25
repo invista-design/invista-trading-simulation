@@ -20,7 +20,7 @@ const ts = (name: string) => timestamp(name, { withTimezone: true, mode: "date" 
 /** Single competition row (id = 1). */
 export const competition = pgTable("competition", {
   id: integer("id").primaryKey().default(1),
-  name: text("name").notNull().default("Trading Simulation"),
+  name: text("name").notNull().default("Market Mayhem - Trading Simulation: Dalal Street Challenge"),
   organiser: text("organiser").notNull().default("InVista"),
   roundName: text("round_name").notNull().default("Round 1"),
   startingCapitalPaise: money("starting_capital_paise").notNull().default(100_000_000),
@@ -31,14 +31,26 @@ export const competition = pgTable("competition", {
   showMarketParameters: boolean("show_market_parameters").notNull().default(false),
   deploymentShare: text("deployment_share").notNull().default("0.7"),
   supplyCalibratedFor: integer("supply_calibrated_for").notNull().default(15),
+  /** Teams can register on the website while this is on. Registration also closes once Phase 1 opens. */
+  registrationOpen: boolean("registration_open").notNull().default(true),
   updatedAt: ts("updated_at").notNull().defaultNow(),
 });
+
+export interface TeamMember {
+  name: string;
+  /** 10-digit Indian mobile number, digits only. */
+  phone: string;
+  email: string;
+}
 
 export const teams = pgTable("teams", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
   nameKey: text("name_key").notNull().unique(),
-  members: jsonb("members").$type<string[]>().notNull().default([]),
+  /** Login code: 1 capital letter and 2 digits, for example A07. Unique across teams. */
+  code: text("code").notNull().unique(),
+  members: jsonb("members").$type<TeamMember[]>().notNull().default([]),
+  registrationSource: text("registration_source").$type<"website" | "organiser">().notNull().default("website"),
   status: text("status").$type<"active" | "disqualified">().notNull().default("active"),
   disqualifiedPhase: integer("disqualified_phase"),
   disqualifiedReason: text("disqualified_reason"),

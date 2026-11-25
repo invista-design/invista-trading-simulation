@@ -35,3 +35,12 @@ export const duration = (seconds: number) => {
   const ss = s ? `${s} ${s === 1 ? "second" : "seconds"}` : "";
   return [mm, ss].filter(Boolean).join(" ") || "0 seconds";
 };
+
+/** Display form of a stored 10-digit mobile number: +91 98765 43210. */
+export const phone = (p: string) => (/^\d{10}$/.test(p) ? `+91 ${p.slice(0, 5)} ${p.slice(5)}` : p);
+
+/** "Market Mayhem - Trading Simulation: Dalal Street Challenge" becomes ["Market Mayhem", "Trading Simulation: Dalal Street Challenge"]. */
+export function splitTitle(name: string): [string, string] {
+  const i = name.indexOf(" - ");
+  return i > 0 ? [name.slice(0, i).trim(), name.slice(i + 3).trim()] : [name, ""];
+}

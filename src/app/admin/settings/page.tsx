@@ -40,7 +40,7 @@ export default async function Settings({ searchParams }: { searchParams: SP }) {
             </label>
             <label className="sm:col-span-2">
               <span className="label">Instagram page for news packs</span>
-              <input name="instagramUrl" defaultValue={comp.instagramUrl} className="input" placeholder="https://www.instagram.com/..." />
+              <input name="instagramUrl" defaultValue={comp.instagramUrl} className="input" placeholder="https://www.instagram.com/your-page" />
             </label>
             <label className="flex items-center gap-2 text-sm sm:col-span-2">
               <input type="checkbox" name="showDemandAfterPublish" defaultChecked={comp.showDemandAfterPublish} /> After publishing, show teams the total lots bought and sold per asset

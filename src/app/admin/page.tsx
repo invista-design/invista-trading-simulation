@@ -23,7 +23,8 @@ export default async function AdminOverview({ searchParams }: { searchParams: SP
   const cur = currentPhase(phases);
   const active = teams.filter((t) => t.status === "active").length;
   const checklist = [
-    { done: teams.length > 0, text: "Register teams and share their logins", href: "/admin/teams" },
+    { done: teams.length > 0, text: "Share the registration page with participants and check the registered teams", href: "/admin/teams" },
+    { done: !comp.registrationOpen || phases.some((p) => p.status !== "draft"), text: "Close registration when all teams are in (it also closes when Phase 1 opens)", href: "/admin/teams" },
     { done: teams.length > 0 && comp.supplyCalibratedFor === teams.length, text: `Recalibrate supply for the registered team count (calibrated for ${comp.supplyCalibratedFor}, registered ${teams.length})`, href: "/admin/assets" },
     { done: Boolean(comp.instagramUrl), text: "Add the InVista Instagram link", href: "/admin/settings" },
     { done: Number(ann[0]?.n ?? 0) > 0, text: "Post the Phase 1 news announcement", href: "/admin/news?tab=announcements" },
@@ -41,7 +42,7 @@ export default async function AdminOverview({ searchParams }: { searchParams: SP
         </div>
       ) : null}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Stat label="Registered teams" value={teams.length} sub={`${active} active · capacity ${comp.teamCapacity}`} />
+        <Stat label="Registered teams" value={teams.length} sub={`${active} active, capacity ${comp.teamCapacity}`} />
         <Stat label="Current phase" value={cur?.name ?? ""} sub={cur ? <PhaseBadge status={cur.status} /> : null} />
         <Stat label="Blocked order attempts" value={Number(attempts[0]?.n ?? 0)} sub="Refused by the server, never applied" />
         <Stat label="Disqualified teams" value={teams.length - active} />

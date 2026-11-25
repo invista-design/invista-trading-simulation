@@ -45,7 +45,7 @@ export default async function NewsAdmin({ searchParams }: { searchParams: SP }) 
             <form action={saveAnnouncement} className="space-y-3">
               <input name="title" required className="input" placeholder="Phase 1 news pack is live on Instagram" />
               <textarea name="body" rows={4} className="input" placeholder="Short message for teams" />
-              <input name="linkUrl" className="input" placeholder="https://www.instagram.com/..." />
+              <input name="linkUrl" className="input" placeholder="https://www.instagram.com/your-page" />
               <div className="flex flex-wrap gap-3">
                 <select name="phase" className="input max-w-48" defaultValue="">
                   <option value="">No phase</option>

@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 const nav = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/phases", label: "Phases and round control" },
-  { href: "/admin/teams", label: "Teams" },
+  { href: "/admin/teams", label: "Registered teams" },
   { href: "/admin/assets", label: "Assets and companies" },
   { href: "/admin/news", label: "News and market impact" },
   { href: "/admin/rules", label: "Rules and rulebook" },

@@ -20,7 +20,7 @@ const label: Record<string, string> = {
 };
 
 /** Phase status and countdown, synchronised to server time. Refreshes the page when the organiser changes anything. */
-export function LiveBar({ initial, serverNow }: { initial: PublicPhase | null; serverNow: string }) {
+export function LiveBar({ initial, serverNow, loginPath = "/login" }: { initial: PublicPhase | null; serverNow: string; loginPath?: string }) {
   const router = useRouter();
   const [phase, setPhase] = useState<PublicPhase | null>(initial);
   const [offset, setOffset] = useState(() => new Date(serverNow).getTime() - Date.now());
@@ -36,7 +36,7 @@ export function LiveBar({ initial, serverNow }: { initial: PublicPhase | null; s
         const t0 = Date.now();
         const res = await fetch("/api/state", { cache: "no-store" });
         if (res.status === 401) {
-          router.push("/login");
+          router.push(loginPath);
           return;
         }
         const data = await res.json();

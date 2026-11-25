@@ -1,9 +1,9 @@
-# InVista Trading Simulation
+# Market Mayhem - Trading Simulation: Dalal Street Challenge
 
-Competition platform for the InVista Trading Simulation at International Management Institute New Delhi. It has 2 parts:
+Competition platform for InVista, the investment society of International Management Institute New Delhi. It has 2 parts:
 
-- **Participant portal**: team sign-in, markets, news announcements linked to the InVista Instagram page, trading terminal with a built-in calculator, portfolio, orders and leaderboards.
-- **Organiser admin panel** at `/admin`: phases and round control, teams and logins, assets, news scores and market settings, trading rules and rulebook, orders, market analytics, leaderboards, reports and the audit log.
+- **Participant portal**: team registration at `/register`, team login at `/login` with the team name and team code, markets, news announcements linked to the InVista Instagram page, trading terminal with a built-in calculator, portfolio, orders and leaderboards.
+- **Organiser admin panel** at `/admin` (sign in at `/organiser`): phases and round control, teams and logins, assets, news scores and market settings, trading rules and rulebook, orders, market analytics, leaderboards, reports and the audit log.
 
 Every financial calculation runs on the server and matches the master workbook (`Trading_Simulation_Model_Rounds_1-3.xlsx`) to the paisa. News scores, market settings and unpublished results never reach a team's browser.
 
@@ -21,12 +21,24 @@ If you choose a database region other than Singapore, change `regions` in `verce
 
 Work through the checklist on the admin Overview page:
 
-1. **Teams**: paste 1 team per line (`Team name | Member 1, Member 2`). Passwords are shown once; download them as a spreadsheet and hand them out.
+1. **Registered teams**: share `https://<your-project>.vercel.app/register`. Each team enters its name and 2 or 3 members (full name, 10-digit mobile number, email ID) and gets a unique code such as K42. The team logs in with its team name and this code. Registration closes when you switch it off, when all places are taken or when Phase 1 opens.
 2. **Assets**: recalibrate supply for the number of registered teams.
 3. **Rules and rulebook**: review the per-phase rules (selling, minimum distinct assets, concentration cap, rationing) and publish the suggested rulebook update so the rulebook matches what the website enforces.
 4. **News and market impact**: confirm the news scores, supply and any opening price override for each phase. These are confidential.
 5. **Settings**: add the Instagram link and add more organiser accounts if needed.
 6. **News**: post an announcement when each news pack goes live on Instagram.
+
+## Managing registered teams
+
+**Registered teams** shows the totals, a searchable table of every team with its code and member details, and a download of the full list. Open **Manage** on any team to:
+
+- edit the team name and member details, or add or remove member 3;
+- see the team code, set a new one or generate one (the team is signed out and must use the new code);
+- switch login access off or on;
+- disqualify or reinstate the team;
+- delete the registration (only before Phase 1 opens; type the team code to confirm).
+
+Team codes are 1 capital letter and 2 digits. New codes never use I or O, so they cannot be misread as 1 or 0. After 5 wrong codes in a row, that team's login pauses for 2 minutes; switching the team's login off and on again clears the pause.
 
 ## During each phase
 

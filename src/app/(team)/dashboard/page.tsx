@@ -19,7 +19,7 @@ export default async function Dashboard() {
     <>
       <PageTitle
         title={v.team.name}
-        sub={v.team.members.length ? v.team.members.join(", ") : "Members not listed"}
+        sub={v.comp.name}
         actions={
           cur && cur.status === "open" && v.participating ? (
             <Link href="/trade" className="btn btn-primary">
@@ -28,6 +28,31 @@ export default async function Dashboard() {
           ) : null
         }
       />
+      <section className="card mb-4 grid gap-4 p-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Team profile">
+        <div>
+          <div className="text-xs text-muted">Team name</div>
+          <div className="mt-0.5 font-semibold">{v.team.name}</div>
+        </div>
+        <div>
+          <div className="text-xs text-muted">Team code</div>
+          <div className="display mt-0.5 text-xl font-bold tracking-[0.2em] text-gold">{v.team.code}</div>
+        </div>
+        <div>
+          <div className="text-xs text-muted">Team members</div>
+          <ul className="mt-0.5 font-medium">
+            {v.team.members.map((m) => (
+              <li key={m.name}>{m.name}</li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <div className="text-xs text-muted">Registration status</div>
+          <div className="mt-0.5 font-medium">
+            {v.team.status === "disqualified" ? <span className="text-down">Registered, disqualified</span> : <span className="text-up">Registered and active</span>}
+          </div>
+          <div className="text-xs text-muted">Registered {dateTime(v.team.createdAt)}</div>
+        </div>
+      </section>
       {v.team.status === "disqualified" ? (
         <div className="mb-4 rounded-lg border border-down/40 bg-downsoft p-4 text-sm text-down">
           <div className="font-semibold">Your team is disqualified</div>
@@ -35,8 +60,17 @@ export default async function Dashboard() {
         </div>
       ) : null}
       {cur && tradingPhase && v.participating ? (
-        <div className={`mb-4 rounded-lg border p-4 text-sm ${liveAssets >= cur.minDistinctAssets ? "border-up/40 bg-upsoft text-up" : "border-down/40 bg-downsoft text-down"}`}>
-          {liveAssets >= cur.minDistinctAssets ? (
+        <div
+          className={`mb-4 rounded-lg border p-4 text-sm ${
+            liveAssets >= cur.minDistinctAssets ? "border-up/40 bg-upsoft text-up" : cur.status === "draft" ? "border-line bg-panel text-ink" : "border-down/40 bg-downsoft text-down"
+          }`}
+        >
+          {cur.status === "draft" && liveAssets < cur.minDistinctAssets ? (
+            <>
+              <span className="font-semibold">When {cur.name} opens:</span> trade at least {cur.minDistinctAssets} different assets. A team without an accepted order is disqualified when the phase is
+              confirmed.
+            </>
+          ) : liveAssets >= cur.minDistinctAssets ? (
             <>
               <span className="font-semibold">Minimum trade requirement met for {cur.name}.</span> Your accepted order trades {liveAssets} assets (submitted {dateTime(v.liveOrder!.submittedAt)}).
             </>

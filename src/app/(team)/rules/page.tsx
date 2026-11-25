@@ -43,7 +43,7 @@ export default async function Rules() {
           </Card>
           <Card title="How prices move">
             <p className="text-sm leading-relaxed text-muted">
-              Prices are fixed while a phase is open. When it closes, each price moves with 2 forces: the news, and how much all teams together bought or sold compared with the market&apos;s depth. Each move is limited in size. The new prices become the next phase&apos;s opening prices unless the news pack announces a market event.
+              Prices are fixed while a phase is open. When it closes, each price moves with 2 forces: the news and how much all teams together bought or sold compared with the market&apos;s depth. Each move is limited in size. The new prices become the next phase&apos;s opening prices unless the news pack announces a market event.
             </p>
           </Card>
           <Card title="Frequently asked questions">

@@ -1,108 +1,161 @@
+import Link from "next/link";
 import { asc, eq } from "drizzle-orm";
-import { CredentialForm } from "@/components/credential-form";
-import { Badge, Card, Empty, Notice, PageTitle, ReasonField, sp, type SP } from "@/components/ui";
+import { AdminTeamForm } from "@/components/admin-team-form";
+import { Badge, Card, Empty, Notice, PageTitle, ReasonField, Stat, sp, type SP } from "@/components/ui";
 import { getDb, schema } from "@/db";
-import { createTeams, deleteTeam, disqualifyTeam, reinstateTeam, resetTeamPassword, updateTeam } from "@/server/admin-actions";
-import { getCompetition, getConfirmedRuns, getPhases } from "@/server/core";
-import { dateTime, inr } from "@/lib/format";
+import { dateTime, nameKey, phone } from "@/lib/format";
+import { setRegistration } from "@/server/admin-actions";
+import { registrationState } from "@/server/teams";
 
-export const metadata = { title: "Teams" };
+export const metadata = { title: "Registered teams" };
 
 export default async function TeamsPage({ searchParams }: { searchParams: SP }) {
   const q = await searchParams;
+  const term = (sp(q.q) ?? "").trim();
   const db = getDb();
-  const [comp, phases, teams, users, runs] = await Promise.all([
-    getCompetition(db),
-    getPhases(db),
-    db.select().from(schema.teams).orderBy(asc(schema.teams.name)),
-    db.select({ teamId: schema.users.teamId, username: schema.users.username, lastLoginAt: schema.users.lastLoginAt }).from(schema.users).where(eq(schema.users.role, "team")),
-    getConfirmedRuns(db),
+  const [comp] = await db.select().from(schema.competition).limit(1);
+  const [teams, users, reg] = await Promise.all([
+    db.select().from(schema.teams).orderBy(asc(schema.teams.createdAt)),
+    db.select({ teamId: schema.users.teamId, active: schema.users.active, lastLoginAt: schema.users.lastLoginAt }).from(schema.users).where(eq(schema.users.role, "team")),
+    registrationState(db),
   ]);
-  const opened = phases.some((p) => p.status !== "draft");
-  const lastRun = [...runs.values()].sort((a, b) => b.run.phaseNumber - a.run.phaseNumber)[0];
+  const login = new Map(users.map((u) => [u.teamId, u]));
+  const serial = new Map(teams.map((t, i) => [t.id, i + 1]));
+  const key = nameKey(term);
+  const shown = term ? teams.filter((t) => t.nameKey.includes(key) || t.code === term.toUpperCase()) : teams;
+  const participants = teams.reduce((n, t) => n + t.members.length, 0);
+  const two = teams.filter((t) => t.members.length === 2).length;
+  const three = teams.filter((t) => t.members.length === 3).length;
+
   return (
     <>
-      <PageTitle title="Teams" sub={`${teams.length} of ${comp.teamCapacity} places used. Names are matched ignoring case and extra spaces, as in the workbook.`} />
+      <PageTitle title="Registered teams" sub="Teams register themselves on the website and log in with their team name and team code." />
       <Notice ok={sp(q.ok)} err={sp(q.err)} />
-      <div className="grid gap-4 xl:grid-cols-[1fr_1.6fr]">
-        <Card title="Register teams">
-          <CredentialForm action={createTeams} submitLabel="Create teams and logins">
-            <label className="block">
-              <span className="label">1 team per line: Team name | member 1, member 2, member 3</span>
-              <textarea name="teams" rows={8} className="input font-mono" placeholder={"Bull Run Capital | Asha Rao, Vikram Singh\nThe Arbitrageurs | Neha Gupta, Rohan Das"} required />
-            </label>
-            <input name="reason" className="input" placeholder="Note for the audit log (optional)" />
-          </CredentialForm>
-          {opened ? <p className="mt-3 text-xs text-warn">Phase 1 has opened. Rulebook 5.8 says a team that registers late cannot join; a team added now starts with full starting capital in the next phase.</p> : null}
-        </Card>
-        <Card title="Registered teams" pad={false}>
-          {teams.length === 0 ? (
-            <div className="p-4">
-              <Empty>No teams yet.</Empty>
-            </div>
-          ) : (
-            <div className="divide-y divide-line">
-              {teams.map((t) => {
-                const u = users.find((x) => x.teamId === t.id);
-                const last = lastRun?.result.teams.find((x) => x.teamId === t.id);
-                return (
-                  <details key={t.id} className="group px-4 py-3">
-                    <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-2">
-                      <span>
-                        <span className="font-semibold">{t.name}</span>
-                        <span className="ml-2 font-mono text-xs text-muted">{u?.username}</span>
-                        <span className="block text-xs text-muted">{t.members.join(", ") || "No members listed"}</span>
-                      </span>
-                      <span className="flex items-center gap-2 text-xs">
-                        {last ? <span className="num text-muted">{inr(last.valuePaise)}</span> : null}
-                        {t.status === "active" ? <Badge kind="up">Active</Badge> : <Badge kind="down">Disqualified in Phase {t.disqualifiedPhase}</Badge>}
-                      </span>
-                    </summary>
-                    <div className="mt-3 grid gap-3 lg:grid-cols-2">
-                      {t.status === "disqualified" ? <p className="text-sm text-down lg:col-span-2">Reason: {t.disqualifiedReason}</p> : null}
-                      {t.reinstatedNote ? <p className="text-sm text-muted lg:col-span-2">Reinstated: {t.reinstatedNote}</p> : null}
-                      <form action={updateTeam} className="space-y-2">
-                        <input type="hidden" name="teamId" value={t.id} />
-                        <input name="name" defaultValue={t.name} className="input" aria-label="Team name" />
-                        <input name="members" defaultValue={t.members.join(", ")} className="input" aria-label="Members" />
-                        <ReasonField />
-                        <button className="btn btn-sm">Save team</button>
-                      </form>
-                      <div className="space-y-3">
-                        <CredentialForm action={resetTeamPassword} submitLabel="Reset password">
-                          <input type="hidden" name="teamId" value={t.id} />
-                          <ReasonField />
-                        </CredentialForm>
-                        {t.status === "active" ? (
-                          <form action={disqualifyTeam} className="space-y-2">
-                            <input type="hidden" name="teamId" value={t.id} />
-                            <ReasonField placeholder="Reason for disqualification (shown to the team)" />
-                            <button className="btn btn-sm btn-danger">Disqualify</button>
-                          </form>
-                        ) : (
-                          <form action={reinstateTeam} className="space-y-2">
-                            <input type="hidden" name="teamId" value={t.id} />
-                            <ReasonField placeholder="Reason for reinstatement" />
-                            <button className="btn btn-sm">Reinstate</button>
-                          </form>
-                        )}
-                        {!opened ? (
-                          <form action={deleteTeam} className="space-y-2">
-                            <input type="hidden" name="teamId" value={t.id} />
-                            <ReasonField placeholder="Reason for deleting" />
-                            <button className="btn btn-sm btn-danger">Delete team</button>
-                          </form>
-                        ) : null}
-                        <p className="text-xs text-muted">Last sign-in: {u?.lastLoginAt ? dateTime(u.lastLoginAt) : "never"}</p>
-                      </div>
-                    </div>
-                  </details>
-                );
-              })}
-            </div>
-          )}
-        </Card>
+
+      <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <Stat label="Total registered teams" value={teams.length} sub={`${comp?.teamCapacity ?? 0} places in total`} />
+        <Stat label="Total registered participants" value={participants} />
+        <Stat label="Teams with 2 members" value={two} />
+        <Stat label="Teams with 3 members" value={three} />
       </div>
+
+      <Card title="Registration" className="mb-4">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="text-sm">
+            <div className={`font-semibold ${reg.open ? "text-up" : "text-down"}`}>{reg.open ? "Open on the website" : reg.message}</div>
+            <div className="mt-1 text-muted">
+              Registration page:{" "}
+              <a className="text-accent underline" href="/register" target="_blank" rel="noreferrer">
+                /register
+              </a>
+              . It closes by itself when Phase 1 opens or when all places are taken.
+            </div>
+          </div>
+          <form action={setRegistration} className="flex flex-wrap items-end gap-2">
+            <input type="hidden" name="open" value={comp?.registrationOpen ? "false" : "true"} />
+            <div className="w-64">
+              <ReasonField />
+            </div>
+            <button className={`btn ${comp?.registrationOpen ? "btn-danger" : "btn-primary"}`}>{comp?.registrationOpen ? "Close registration" : "Open registration"}</button>
+          </form>
+        </div>
+      </Card>
+
+      <Card
+        title={term ? `${shown.length} of ${teams.length} teams match "${term}"` : `All teams (${teams.length})`}
+        pad={false}
+        actions={
+          <div className="flex flex-wrap gap-2">
+            <form className="flex gap-2">
+              <input name="q" defaultValue={term} className="input w-56" placeholder="Search team name or code" aria-label="Search team name or code" />
+              <button className="btn btn-sm">Search</button>
+              {term ? (
+                <Link href="/admin/teams" className="btn btn-sm">
+                  Clear
+                </Link>
+              ) : null}
+            </form>
+            <a className="btn btn-sm" href="/api/admin/export?kind=teams">
+              Download (.xlsx)
+            </a>
+          </div>
+        }
+      >
+        {shown.length === 0 ? (
+          <div className="p-4">
+            <Empty>{term ? "No team matches this search." : "No teams have registered yet. Share the registration page with participants."}</Empty>
+          </div>
+        ) : (
+          <div className="relative overflow-x-auto">
+            <table className="tbl min-w-[1900px] text-xs">
+              <thead>
+                <tr>
+                  <th>Serial number</th>
+                  <th>Team name</th>
+                  <th>Team code</th>
+                  {[1, 2, 3].flatMap((i) => [
+                    <th key={`${i}n`}>Member {i} name</th>,
+                    <th key={`${i}p`}>Member {i} contact number</th>,
+                    <th key={`${i}e`}>Member {i} email ID</th>,
+                  ])}
+                  <th>Registered</th>
+                  <th>Registration status</th>
+                  <th>
+                    <span className="sr-only">Manage</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {shown.map((t) => {
+                  const u = login.get(t.id);
+                  return (
+                    <tr key={t.id}>
+                      <td className="num">{serial.get(t.id)}</td>
+                      <td className="font-semibold">
+                        <Link href={`/admin/teams/${t.id}`} className="hover:text-accent hover:underline">
+                          {t.name}
+                        </Link>
+                      </td>
+                      <td className="display text-sm font-bold tracking-widest text-gold">{t.code}</td>
+                      {[0, 1, 2].flatMap((i) => {
+                        const m = t.members[i];
+                        return [
+                          <td key={`${i}n`}>{m?.name ?? <span className="text-muted">Not applicable</span>}</td>,
+                          <td key={`${i}p`} className="num">
+                            {m?.phone ? phone(m.phone) : ""}
+                          </td>,
+                          <td key={`${i}e`}>{m?.email ?? ""}</td>,
+                        ];
+                      })}
+                      <td className="num">{dateTime(t.createdAt)}</td>
+                      <td>
+                        <div className="flex flex-wrap gap-1">
+                          {u?.active ? <Badge kind="up">Login on</Badge> : <Badge kind="down">Login off</Badge>}
+                          {t.status === "disqualified" ? <Badge kind="down">Disqualified, Phase {t.disqualifiedPhase}</Badge> : null}
+                          {t.registrationSource === "organiser" ? <Badge kind="muted">Added by organiser</Badge> : null}
+                        </div>
+                      </td>
+                      <td>
+                        <Link href={`/admin/teams/${t.id}`} className="btn btn-sm">
+                          Manage
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Card>
+
+      <details className="card mt-4">
+        <summary className="cursor-pointer px-4 py-3 font-semibold">Register a team on its behalf</summary>
+        <div className="border-t border-line p-4">
+          <p className="mb-4 text-sm text-muted">Use this for a team that cannot register on the website. It works even when registration is closed, up to the team capacity.</p>
+          <AdminTeamForm mode="add" />
+        </div>
+      </details>
     </>
   );
 }

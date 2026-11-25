@@ -11,6 +11,7 @@ import { ensurePhaseAssetRows, getAssets, getPhases } from "./core";
 import { submitOrder } from "./orders";
 import * as P from "./phases";
 import { resetCompetition } from "./reset";
+import { TeamError, changeTeamCode, createTeam, readTeamForm, setRegistrationOpen, setTeamLogin, updateTeamDetails, validateTeamForm, type FieldErrors, type TeamFormValues } from "./teams";
 
 // ---------- helpers ----------
 const str = (fd: FormData, k: string) => String(fd.get(k) ?? "").trim();
@@ -73,83 +74,90 @@ export interface CredentialState {
   credentials?: { team: string; username: string; password: string }[];
 }
 
-function usernameFrom(name: string) {
-  return nameKey(name).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 30) || "team";
+/** State for the add-team and edit-team forms: keeps what was typed and shows errors beside each field. */
+export interface TeamFormState {
+  ok?: string;
+  err?: string;
+  errors?: FieldErrors;
+  values?: TeamFormValues;
+  code?: string;
+  attempt?: number;
 }
 
-export async function createTeams(_prev: CredentialState, fd: FormData): Promise<CredentialState> {
+function teamFormError(e: unknown, values: TeamFormValues, attempt: number): TeamFormState {
+  if (e instanceof TeamError) return { err: e.message, errors: e.field ? { [e.field]: e.message } : undefined, values, attempt };
+  if (e instanceof UserError) return { err: e.message, values, attempt };
+  return { err: `Could not save: ${(e as Error).message}`, values, attempt };
+}
+
+export async function addTeam(prev: TeamFormState, fd: FormData): Promise<TeamFormState> {
   const user = await requireOrganiser();
-  const db = getDb();
+  const values = readTeamForm(fd);
+  const attempt = (prev.attempt ?? 0) + 1;
   try {
-    const lines = str(fd, "teams").split("\n").map((l) => l.trim()).filter(Boolean);
-    need(lines.length > 0, "Enter at least 1 team, 1 per line");
-    const [comp] = await db.select().from(schema.competition).limit(1);
-    const existing = await db.select().from(schema.teams);
-    need(existing.length + lines.length <= (comp?.teamCapacity ?? 1000), `Team capacity is ${comp?.teamCapacity}. Raise it in Settings first`);
-    const creds: NonNullable<CredentialState["credentials"]> = [];
-    await db.transaction(async (tx) => {
-      for (const line of lines) {
-        const [rawName, rawMembers = ""] = line.split("|");
-        const name = rawName.replace(/\s+/g, " ").trim();
-        need(name.length >= 2 && name.length <= 60, `Team name "${name}" must be 2 to 60 characters`);
-        const members = rawMembers.split(/[,;]/).map((m) => m.trim()).filter(Boolean);
-        const [dupe] = await tx.select().from(schema.teams).where(eq(schema.teams.nameKey, nameKey(name))).limit(1);
-        need(!dupe, `A team named "${name}" already exists (names are matched ignoring case and extra spaces)`);
-        const [team] = await tx.insert(schema.teams).values({ name, nameKey: nameKey(name), members }).returning();
-        let username = usernameFrom(name);
-        for (let i = 2; (await tx.select().from(schema.users).where(eq(schema.users.username, username)).limit(1)).length > 0; i++) username = `${usernameFrom(name)}-${i}`;
-        const password = generatePassword();
-        await tx.insert(schema.users).values({ username, passwordHash: await hashPassword(password), role: "team", teamId: team.id, displayName: name });
-        creds.push({ team: name, username, password });
-      }
-      await audit(tx, { username: user.username, action: "team.create", entity: "team", reason: str(fd, "reason") || "Team registration", after: creds.map((c) => ({ team: c.team, username: c.username })) });
-    });
+    const reason = reasonOf(fd);
+    const { errors, input } = validateTeamForm(values);
+    if (!input) return { err: "Check the highlighted fields", errors, values, attempt };
+    const { code } = await createTeam(input, "organiser", user.username, reason);
     revalidatePath("/admin/teams");
-    return { ok: `${creds.length} team(s) created. Copy or download the passwords now: they are shown only once`, credentials: creds };
+    return { ok: `${input.name} registered with code ${code}`, code, attempt };
   } catch (e) {
-    return { err: e instanceof UserError ? e.message : `Could not create teams: ${(e as Error).message}` };
+    return teamFormError(e, values, attempt);
   }
 }
 
-export async function resetTeamPassword(_prev: CredentialState, fd: FormData): Promise<CredentialState> {
+export async function saveTeamDetails(prev: TeamFormState, fd: FormData): Promise<TeamFormState> {
   const user = await requireOrganiser();
-  const db = getDb();
+  const values = readTeamForm(fd);
+  const attempt = (prev.attempt ?? 0) + 1;
   try {
     const teamId = str(fd, "teamId");
     const reason = reasonOf(fd);
-    const [u] = await db.select().from(schema.users).where(eq(schema.users.teamId, teamId)).limit(1);
-    need(u, "Team login not found");
-    const password = generatePassword();
-    await db.update(schema.users).set({ passwordHash: await hashPassword(password), failedLogins: 0, lockedUntil: null }).where(eq(schema.users.id, u.id));
-    await revokeUserSessions(u.id);
-    await audit(db, { username: user.username, action: "team.reset_password", entity: "team", entityId: u.displayName, reason });
-    return { ok: "New password created. Existing sessions for this team were signed out", credentials: [{ team: u.displayName, username: u.username, password }] };
+    const { errors, input } = validateTeamForm(values);
+    if (!input) return { err: "Check the highlighted fields", errors, values, attempt };
+    const name = await updateTeamDetails(teamId, input, user.username, reason);
+    revalidatePath("/admin/teams", "layout");
+    return { ok: `Saved ${name}`, values, attempt };
   } catch (e) {
-    return { err: e instanceof UserError ? e.message : (e as Error).message };
+    return teamFormError(e, values, attempt);
   }
 }
 
-export async function updateTeam(fd: FormData) {
-  return act("/admin/teams", async (actor) => {
-    const db = getDb();
-    const id = str(fd, "teamId");
+export async function changeCode(fd: FormData) {
+  const teamId = str(fd, "teamId");
+  return act(`/admin/teams/${teamId}`, async (actor) => {
     const reason = reasonOf(fd);
-    const name = str(fd, "name").replace(/\s+/g, " ");
-    need(name.length >= 2 && name.length <= 60, "Team name must be 2 to 60 characters");
-    const members = str(fd, "members").split(/[,;\n]/).map((m) => m.trim()).filter(Boolean);
-    const [before] = await db.select().from(schema.teams).where(eq(schema.teams.id, id)).limit(1);
-    need(before, "Team not found");
-    const [clash] = await db.select().from(schema.teams).where(eq(schema.teams.nameKey, nameKey(name))).limit(1);
-    need(!clash || clash.id === id, `Another team is already named "${name}"`);
-    await db.update(schema.teams).set({ name, nameKey: nameKey(name), members }).where(eq(schema.teams.id, id));
-    await db.update(schema.users).set({ displayName: name }).where(eq(schema.users.teamId, id));
-    await audit(db, { username: actor, action: "team.update", entity: "team", entityId: name, reason, before: { name: before.name, members: before.members }, after: { name, members } });
-    return `Saved ${name}`;
+    try {
+      const r = await changeTeamCode(teamId, str(fd, "code"), actor, reason);
+      return `${r.name} now logs in with code ${r.code}. The team was signed out and must use the new code`;
+    } catch (e) {
+      if (e instanceof TeamError) throw new UserError(e.message);
+      throw e;
+    }
+  });
+}
+
+export async function setLoginAccess(fd: FormData) {
+  const teamId = str(fd, "teamId");
+  return act(`/admin/teams/${teamId}`, async (actor) => {
+    const reason = reasonOf(fd);
+    const active = str(fd, "active") === "true";
+    const name = await setTeamLogin(teamId, active, actor, reason);
+    return active ? `Login access switched on for ${name}` : `Login access switched off for ${name}. The team was signed out`;
+  });
+}
+
+export async function setRegistration(fd: FormData) {
+  return act("/admin/teams", async (actor) => {
+    const reason = reasonOf(fd);
+    const open = str(fd, "open") === "true";
+    await setRegistrationOpen(open, actor, reason);
+    return open ? "Registration is open on the website" : "Registration is closed on the website";
   });
 }
 
 export async function disqualifyTeam(fd: FormData) {
-  return act("/admin/teams", async (actor) => {
+  return act(`/admin/teams/${str(fd, "teamId")}`, async (actor) => {
     const db = getDb();
     const id = str(fd, "teamId");
     const reason = reasonOf(fd);
@@ -170,7 +178,7 @@ export async function disqualifyTeam(fd: FormData) {
 }
 
 export async function reinstateTeam(fd: FormData) {
-  return act("/admin/teams", async (actor) => {
+  return act(`/admin/teams/${str(fd, "teamId")}`, async (actor) => {
     const db = getDb();
     const id = str(fd, "teamId");
     const reason = reasonOf(fd);
@@ -193,16 +201,23 @@ export async function reinstateTeam(fd: FormData) {
 }
 
 export async function deleteTeam(fd: FormData) {
-  return act("/admin/teams", async (actor) => {
-    const db = getDb();
-    need(!(await phase1Opened()), "Teams cannot be deleted once Phase 1 has opened. Disqualify the team instead");
-    const id = str(fd, "teamId");
-    const reason = reasonOf(fd);
-    const [t] = await db.select().from(schema.teams).where(eq(schema.teams.id, id)).limit(1);
+  const id = str(fd, "teamId");
+  const db = getDb();
+  const [t] = await db.select().from(schema.teams).where(eq(schema.teams.id, id)).limit(1);
+  // Success leaves the deleted team's page, so it returns to the list; an error stays on the team's page.
+  if (t && !(await phase1Opened()) && str(fd, "confirm").toUpperCase() === t.code && str(fd, "reason").length >= 3) {
+    return act("/admin/teams", async (actor) => {
+      await db.delete(schema.teams).where(eq(schema.teams.id, id));
+      await audit(db, { username: actor, action: "team.delete", entity: "team", entityId: t.name, reason: str(fd, "reason"), before: { code: t.code, members: t.members } });
+      return `${t.name} deleted`;
+    });
+  }
+  return act(`/admin/teams/${id}`, async () => {
     need(t, "Team not found");
-    await db.delete(schema.teams).where(eq(schema.teams.id, id));
-    await audit(db, { username: actor, action: "team.delete", entity: "team", entityId: t.name, reason });
-    return `${t.name} deleted`;
+    need(!(await phase1Opened()), "Teams cannot be deleted once Phase 1 has opened. Disqualify the team instead");
+    reasonOf(fd);
+    need(str(fd, "confirm").toUpperCase() === t.code, `Type the team code ${t.code} to confirm the deletion`);
+    return "";
   });
 }
 

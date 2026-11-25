@@ -1,4 +1,5 @@
 import "server-only";
+import { phone as formatPhone } from "@/lib/format";
 import ExcelJS from "exceljs";
 import { asc, desc, eq } from "drizzle-orm";
 import { getDb, schema } from "@/db";
@@ -25,7 +26,7 @@ export const EXPORT_KINDS = {
   market: "Demand, supply and price movements",
   leaderboards: "Leaderboards by phase",
   attempts: "Blocked order attempts",
-  teams: "Teams and logins",
+  teams: "Registered teams",
   audit: "Audit log",
 } as const;
 export type ExportKind = keyof typeof EXPORT_KINDS;
@@ -273,21 +274,43 @@ export async function buildTables(kind: ExportKind): Promise<Table[]> {
 
   if (kind === "teams") {
     const users = await db.select().from(schema.users).where(eq(schema.users.role, "team"));
+    const ordered = [...teams].sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+    const memberCols: Col[] = [1, 2, 3].flatMap((i) => [
+      { header: `Member ${i} name`, key: `m${i}Name`, type: "text" as const },
+      { header: `Member ${i} contact number`, key: `m${i}Phone`, type: "text" as const },
+      { header: `Member ${i} email ID`, key: `m${i}Email`, type: "text" as const },
+    ]);
     return [{
-      title: "Teams",
+      title: "Registered teams",
       columns: [
-        { header: "Team", key: "team", type: "text" },
-        { header: "Members", key: "members", type: "text" },
-        { header: "Username", key: "username", type: "text" },
-        { header: "Status", key: "status", type: "text" },
+        { header: "Serial number", key: "sn", type: "int" },
+        { header: "Team name", key: "team", type: "text" },
+        { header: "Team code", key: "code", type: "text" },
+        ...memberCols,
+        { header: "Registered at", key: "registeredAt", type: "date" },
+        { header: "Registered by", key: "source", type: "text" },
+        { header: "Login access", key: "login", type: "text" },
+        { header: "Competition status", key: "status", type: "text" },
         { header: "Disqualified in phase", key: "dqPhase", type: "int" },
         { header: "Reason", key: "dqReason", type: "text" },
         { header: "Reinstatement note", key: "reinstated", type: "text" },
+        { header: "Last login", key: "lastLogin", type: "date" },
       ],
-      rows: teams.map((t) => ({
-        team: t.name, members: t.members.join(", "), username: users.find((u) => u.teamId === t.id)?.username ?? "", status: t.status,
-        dqPhase: t.disqualifiedPhase, dqReason: t.disqualifiedReason ?? "", reinstated: t.reinstatedNote ?? "",
-      })),
+      rows: ordered.map((t, idx) => {
+        const u = users.find((x) => x.teamId === t.id);
+        const row: Record<string, unknown> = {
+          sn: idx + 1, team: t.name, code: t.code, registeredAt: t.createdAt, source: t.registrationSource === "website" ? "Team, on the website" : "Organiser",
+          login: u?.active ? "On" : "Off", status: t.status === "active" ? "Active" : "Disqualified",
+          dqPhase: t.disqualifiedPhase, dqReason: t.disqualifiedReason ?? "", reinstated: t.reinstatedNote ?? "", lastLogin: u?.lastLoginAt ?? null,
+        };
+        [0, 1, 2].forEach((i) => {
+          const m = t.members[i];
+          row[`m${i + 1}Name`] = m?.name ?? "";
+          row[`m${i + 1}Phone`] = m?.phone ? formatPhone(m.phone) : "";
+          row[`m${i + 1}Email`] = m?.email ?? "";
+        });
+        return row;
+      }),
     }];
   }
 
