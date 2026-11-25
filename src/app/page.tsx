@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AssetTicker, Brand, Logo } from "@/components/brand";
+import { AssetTicker, Brand, CLUB_NAME, ClubLines, INSTITUTE, Logo } from "@/components/brand";
 import { PhaseBadge } from "@/components/ui";
 import { getSessionUser } from "@/lib/auth";
 import { dateTime, duration, inr, pct, splitTitle } from "@/lib/format";
@@ -27,7 +27,7 @@ export default async function Landing() {
   return (
     <div className="min-h-screen">
       <header className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-5">
-        <Brand name={name} size={44} sub="InVista, International Management Institute New Delhi" />
+        <Brand name={name} size={44} sub={<ClubLines />} />
         <Link href={workspace ?? "/login"} className="btn">
           {workspace ? "Open my workspace" : "Team login"}
         </Link>
@@ -38,11 +38,37 @@ export default async function Landing() {
           <div>
             <h1 className="display text-5xl font-bold leading-[1.05] text-gold sm:text-6xl lg:text-7xl">{title}</h1>
             {subtitle ? <p className="mt-3 text-xl font-medium sm:text-2xl">{subtitle}</p> : null}
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-muted">
-              Teams of 2 or 3 trade {data?.rows.length ?? 10} assets over {data?.phases.length ?? 3} phases, starting with{" "}
-              {data ? inr(data.comp.startingCapitalPaise, false) : "₹10,00,000"} in virtual cash. Read each news pack, place your orders before the clock runs out and finish with the highest
-              portfolio value.
-            </p>
+            {data ? (
+              <>
+                <dl className="mt-7 flex max-w-xl flex-wrap gap-x-12 gap-y-3 border-y border-line py-4">
+                  <div>
+                    <dt className="text-xs text-muted">Date</dt>
+                    <dd className="mt-1 font-semibold sm:text-lg">{data.comp.eventDate}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs text-muted">Time</dt>
+                    <dd className="mt-1 font-semibold sm:text-lg">{data.comp.eventTime}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs text-muted">Venue</dt>
+                    <dd className="mt-1 font-semibold sm:text-lg">{data.comp.eventVenue}</dd>
+                  </div>
+                </dl>
+                {data.comp.prizePool ? (
+                  <div className="prize mt-6 max-w-xl rounded-2xl p-[1.5px]">
+                    <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 rounded-[calc(1rem-1.5px)] bg-panel px-6 py-5">
+                      <span className="text-sm font-medium text-muted">Prize pool</span>
+                      <span className="prize-amount display text-5xl font-bold leading-none sm:text-6xl">{data.comp.prizePool}</span>
+                    </div>
+                  </div>
+                ) : null}
+                {data.comp.eventNote ? (
+                  <p className="mt-4 max-w-xl text-sm">
+                    <span className="font-semibold text-gold">Recommended:</span> {data.comp.eventNote}
+                  </p>
+                ) : null}
+              </>
+            ) : null}
             <div className="mt-8 flex flex-wrap items-center gap-3">
               {reg?.open ? (
                 <Link href="/register" className="btn btn-primary px-6 py-3 text-base">
@@ -178,7 +204,9 @@ export default async function Landing() {
 
       <footer className="border-t border-line">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-5 text-xs text-muted">
-          <span>Organised by InVista, the investment society of International Management Institute New Delhi</span>
+          <span>
+            Organised by {CLUB_NAME}, {INSTITUTE}
+          </span>
           <Link href="/organiser" className="underline">
             Organiser sign-in
           </Link>

@@ -42,6 +42,29 @@ export default async function Settings({ searchParams }: { searchParams: SP }) {
               <span className="label">Instagram page for news packs</span>
               <input name="instagramUrl" defaultValue={comp.instagramUrl} className="input" placeholder="https://www.instagram.com/your-page" />
             </label>
+            <fieldset className="grid gap-3 sm:col-span-2 sm:grid-cols-3">
+              <legend className="mb-1 text-sm font-semibold">Event details on the home page</legend>
+              <label>
+                <span className="label">Date</span>
+                <input name="eventDate" defaultValue={comp.eventDate} className="input" />
+              </label>
+              <label>
+                <span className="label">Time</span>
+                <input name="eventTime" defaultValue={comp.eventTime} className="input" />
+              </label>
+              <label>
+                <span className="label">Venue</span>
+                <input name="eventVenue" defaultValue={comp.eventVenue} className="input" />
+              </label>
+              <label>
+                <span className="label">Prize pool</span>
+                <input name="prizePool" defaultValue={comp.prizePool} className="input" placeholder="Leave blank to hide" />
+              </label>
+              <label className="sm:col-span-2">
+                <span className="label">Recommended</span>
+                <input name="eventNote" defaultValue={comp.eventNote} className="input" placeholder="Leave blank to hide" />
+              </label>
+            </fieldset>
             <label className="flex items-center gap-2 text-sm sm:col-span-2">
               <input type="checkbox" name="showDemandAfterPublish" defaultChecked={comp.showDemandAfterPublish} /> After publishing, show teams the total lots bought and sold per asset
             </label>

@@ -35,6 +35,12 @@ export const competition = pgTable("competition", {
   registrationOpen: boolean("registration_open").notNull().default(true),
   /** Teams can log in only while this is on. Organisers switch it on when the codes have been handed out. */
   teamLoginOpen: boolean("team_login_open").notNull().default(false),
+  /** Event details shown on the home page; edited in Settings. */
+  eventDate: text("event_date").notNull().default("30th November, 2026"),
+  eventTime: text("event_time").notNull().default("5PM"),
+  eventVenue: text("event_venue").notNull().default("Auditorium"),
+  prizePool: text("prize_pool").notNull().default("₹12,000"),
+  eventNote: text("event_note").notNull().default("Bring your fully charged laptops"),
   updatedAt: ts("updated_at").notNull().defaultNow(),
 });
 

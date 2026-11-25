@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Brand } from "@/components/brand";
+import { Brand, ClubLines } from "@/components/brand";
 import { RegisterForm } from "@/components/register-form";
 import { getCompetition } from "@/server/core";
 import { registrationState } from "@/server/teams";
@@ -16,7 +16,7 @@ export default async function RegisterPage() {
   return (
     <div className="min-h-screen">
       <header className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-5">
-        <Brand name={comp.name} size={44} sub="InVista, International Management Institute New Delhi" />
+        <Brand name={comp.name} size={44} sub={<ClubLines />} />
         <Link href="/login" className="btn">
           Team login
         </Link>

@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { splitTitle } from "@/lib/format";
 
-const ALT = "InVista, the investment society of International Management Institute New Delhi";
+export const CLUB_NAME = "InVista - The Investment Club";
+export const INSTITUTE = "International Management Institute (IMI), Delhi";
+const ALT = `${CLUB_NAME}, ${INSTITUTE}`;
 
 /** The InVista seal. The small file is used up to 160 pixels, the large one above that. */
 export function Logo({ size = 40, className = "" }: { size?: number; className?: string }) {
@@ -9,7 +11,7 @@ export function Logo({ size = 40, className = "" }: { size?: number; className?:
 }
 
 /** Logo with the competition name split into its title and subtitle. */
-export function Brand({ name, href = "/", size = 44, sub, compact = false }: { name: string; href?: string; size?: number; sub?: string; compact?: boolean }) {
+export function Brand({ name, href = "/", size = 44, sub, compact = false }: { name: string; href?: string; size?: number; sub?: React.ReactNode; compact?: boolean }) {
   const [title, subtitle] = splitTitle(name);
   return (
     <Link href={href} className="flex items-center gap-3">
@@ -37,5 +39,15 @@ export function AssetTicker({ assets }: { assets: { code: string; name: string }
         ))}
       </div>
     </div>
+  );
+}
+
+/** Club and institute, on 2 lines, for the public page headers. */
+export function ClubLines() {
+  return (
+    <>
+      <span className="block">{CLUB_NAME}</span>
+      <span className="block">{INSTITUTE}</span>
+    </>
   );
 }

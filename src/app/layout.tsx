@@ -5,7 +5,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: { default: "Market Mayhem", template: "%s | Market Mayhem" },
-  description: "Market Mayhem - Trading Simulation: Dalal Street Challenge, by InVista, the investment society of International Management Institute New Delhi",
+  description: "Market Mayhem - Trading Simulation: Dalal Street Challenge, by InVista - The Investment Club, International Management Institute (IMI), Delhi",
   robots: { index: false, follow: false },
 };
 

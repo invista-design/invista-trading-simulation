@@ -600,6 +600,11 @@ export async function saveSettings(fd: FormData) {
       instagramUrl: url,
       showDemandAfterPublish: bool(fd, "showDemandAfterPublish"),
       showMarketParameters: bool(fd, "showMarketParameters"),
+      eventDate: str(fd, "eventDate").slice(0, 60),
+      eventTime: str(fd, "eventTime").slice(0, 40),
+      eventVenue: str(fd, "eventVenue").slice(0, 80),
+      prizePool: str(fd, "prizePool").slice(0, 30),
+      eventNote: str(fd, "eventNote").slice(0, 160),
     };
     await db.update(schema.competition).set({ ...after, updatedAt: new Date() });
     await audit(db, { username: actor, action: "settings.save", entity: "competition", reason, before, after });
