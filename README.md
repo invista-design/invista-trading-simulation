@@ -38,6 +38,10 @@ Every organiser action asks for a reason and is written to the audit log with th
 
 Edit the settings of a confirmed phase (for example a news score), then use **Preview a recalculation from this phase**. The preview lists every price, value, order and disqualification that would change. Nothing changes until you confirm it. Earlier results are kept as superseded snapshots.
 
+## Starting again after a test
+
+Use **Settings, Reset the competition** after a test run. It deletes every order, refused attempt and phase result, clears disqualifications and returns every phase to Not started. Teams keep their logins unless you tick the option to delete them. You can also delete announcements and restore the workbook's assets, prices, supply, news scores and phase rules. Organiser accounts, rulebook versions and the audit log are always kept. Type RESET and give a reason to confirm; the reset is recorded in the audit log.
+
 ## Data safety
 
 - All competition data lives in the Neon database. Redeploying the site never deletes it; migrations only add structure.
