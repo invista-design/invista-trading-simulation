@@ -128,7 +128,7 @@ export async function registrationState(db: DbOrTx = getDb()): Promise<Registrat
   if (!comp) return { open: false, message: "Registration has not opened yet", registered, capacity };
   if (Number(started) > 0) return { open: false, message: "Registration closed when Phase 1 opened", registered, capacity };
   if (!comp.registrationOpen) return { open: false, message: "Registration is closed", registered, capacity };
-  if (registered >= capacity) return { open: false, message: `All ${capacity} places are taken`, registered, capacity };
+  if (registered >= capacity) return { open: false, message: "Registration is full", registered, capacity };
   return { open: true, message: "Registration is open", registered, capacity };
 }
 

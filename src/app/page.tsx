@@ -55,7 +55,7 @@ export default async function Landing() {
             </div>
             {reg ? (
               <p className="mt-4 text-sm text-muted">
-                {reg.open ? `Registration is open. ${reg.registered} of ${reg.capacity} places taken.` : `${reg.message}.`}
+                {reg.open ? "Registration is open." : `${reg.message}.`}
               </p>
             ) : null}
           </div>
