@@ -29,6 +29,7 @@ export default async function AdminOverview({ searchParams }: { searchParams: SP
     { done: Boolean(comp.instagramUrl), text: "Add the InVista Instagram link", href: "/admin/settings" },
     { done: Number(ann[0]?.n ?? 0) > 0, text: "Post the Phase 1 news announcement", href: "/admin/news?tab=announcements" },
     { done: Number(rb[0]?.n ?? 0) > 1, text: "Publish the suggested rulebook update so the rules match the website (Rules page)", href: "/admin/rules" },
+    { done: comp.teamLoginOpen, text: "Hand out the team codes, then switch team login on (Registered teams)", href: "/admin/teams" },
     { done: phases.some((p) => p.status !== "draft"), text: "Open Phase 1", href: "/admin/phases" },
   ];
   const recalc = phases.filter((p) => p.needsRecalculation);

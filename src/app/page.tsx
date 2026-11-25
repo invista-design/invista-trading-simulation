@@ -113,13 +113,13 @@ export default async function Landing() {
                   </li>
                   <li className="border-l-2 border-gold pl-4">
                     <div className="display text-3xl font-bold text-gold">2</div>
-                    <div className="mt-1 font-semibold">Save your team code</div>
-                    <p className="mt-1 text-sm text-muted">You get a 3-character code such as K42 as soon as you register. It is your password.</p>
+                    <div className="mt-1 font-semibold">Collect your team code</div>
+                    <p className="mt-1 text-sm text-muted">The organisers give each team a 3-character code, such as K42, in person. It is your password.</p>
                   </li>
                   <li className="border-l-2 border-gold pl-4">
                     <div className="display text-3xl font-bold text-gold">3</div>
                     <div className="mt-1 font-semibold">Log in on the day</div>
-                    <p className="mt-1 text-sm text-muted">Use your team name and code to trade when Phase 1 opens.</p>
+                    <p className="mt-1 text-sm text-muted">Use your team name and code once the organisers open team login, then trade when Phase 1 opens.</p>
                   </li>
                 </ol>
               </section>

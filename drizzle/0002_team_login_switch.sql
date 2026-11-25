@@ -1,0 +1,1 @@
+ALTER TABLE "competition" ADD COLUMN "team_login_open" boolean DEFAULT false NOT NULL;

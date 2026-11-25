@@ -21,12 +21,13 @@ If you choose a database region other than Singapore, change `regions` in `verce
 
 Work through the checklist on the admin Overview page:
 
-1. **Registered teams**: share `https://<your-project>.vercel.app/register`. Each team enters its name and 2 or 3 members (full name, 10-digit mobile number, email ID) and gets a unique code such as K42. The team logs in with its team name and this code. Registration closes when you switch it off, when all places are taken or when Phase 1 opens.
-2. **Assets**: recalibrate supply for the number of registered teams.
-3. **Rules and rulebook**: review the per-phase rules (selling, minimum distinct assets, concentration cap, rationing) and publish the suggested rulebook update so the rulebook matches what the website enforces.
-4. **News and market impact**: confirm the news scores, supply and any opening price override for each phase. These are confidential.
-5. **Settings**: add the Instagram link and add more organiser accounts if needed.
-6. **News**: post an announcement when each news pack goes live on Instagram.
+1. **Registered teams**: share `https://<your-project>.vercel.app/register`. Each team enters its name and 2 or 3 members (full name, 10-digit mobile number, email ID). The website assigns a unique code such as K42 but never shows it to the team: you see every code on Registered teams and in the download, and hand them out in person. Registration closes when you switch it off, when all places are taken or when Phase 1 opens.
+2. **Team login**: it is off until you switch it on in Registered teams, so nobody can log in before the codes are handed out. Switching it off again signs every team out at once.
+3. **Assets**: recalibrate supply for the number of registered teams.
+4. **Rules and rulebook**: review the per-phase rules (selling, minimum distinct assets, concentration cap, rationing) and publish the suggested rulebook update so the rulebook matches what the website enforces.
+5. **News and market impact**: confirm the news scores, supply and any opening price override for each phase. These are confidential.
+6. **Settings**: add the Instagram link and add more organiser accounts if needed.
+7. **News**: post an announcement when each news pack goes live on Instagram.
 
 ## Managing registered teams
 

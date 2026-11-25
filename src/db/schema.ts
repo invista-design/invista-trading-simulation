@@ -33,6 +33,8 @@ export const competition = pgTable("competition", {
   supplyCalibratedFor: integer("supply_calibrated_for").notNull().default(15),
   /** Teams can register on the website while this is on. Registration also closes once Phase 1 opens. */
   registrationOpen: boolean("registration_open").notNull().default(true),
+  /** Teams can log in only while this is on. Organisers switch it on when the codes have been handed out. */
+  teamLoginOpen: boolean("team_login_open").notNull().default(false),
   updatedAt: ts("updated_at").notNull().defaultNow(),
 });
 

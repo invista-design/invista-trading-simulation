@@ -2,7 +2,7 @@ import { and, desc, eq } from "drizzle-orm";
 import { Badge, Card, Empty, Notice, PageTitle, PhaseBadge, ReasonField, sp, type SP } from "@/components/ui";
 import { getDb, schema } from "@/db";
 import { addPhase, phaseCommand, removeLastPhase, savePhaseSchedule } from "@/server/admin-actions";
-import { getAssets, getConfirmedRuns, getPhaseAssetRows, getPhases, openingPrices, settleAutoClose, type RunResult } from "@/server/core";
+import { getAssets, getCompetition, getConfirmedRuns, getPhaseAssetRows, getPhases, openingPrices, settleAutoClose, type RunResult } from "@/server/core";
 import { latestPreview, latestRecalculationPreview } from "@/server/phases";
 import { dateTime, inr, num, pct, signedInr, tone, duration } from "@/lib/format";
 
@@ -28,7 +28,14 @@ export default async function PhasesPage({ searchParams }: { searchParams: SP })
   const q = await searchParams;
   const db = getDb();
   await settleAutoClose(db);
-  const [phases, assets, runs, teams, recalc] = await Promise.all([getPhases(db), getAssets(db), getConfirmedRuns(db), db.select().from(schema.teams), latestRecalculationPreview(db)]);
+  const [phases, assets, runs, teams, recalc, comp] = await Promise.all([
+    getPhases(db),
+    getAssets(db),
+    getConfirmedRuns(db),
+    db.select().from(schema.teams),
+    latestRecalculationPreview(db),
+    getCompetition(db),
+  ]);
   const teamName = new Map(teams.map((t) => [t.id, t.name]));
   const history = await db.select({ id: schema.phaseRuns.id, phase: schema.phaseRuns.phaseNumber, status: schema.phaseRuns.status, kind: schema.phaseRuns.kind, createdAt: schema.phaseRuns.createdAt, confirmedAt: schema.phaseRuns.confirmedAt, confirmedBy: schema.phaseRuns.confirmedBy, reason: schema.phaseRuns.reason }).from(schema.phaseRuns).where(and(eq(schema.phaseRuns.status, "superseded"))).orderBy(desc(schema.phaseRuns.id));
 
@@ -44,6 +51,15 @@ export default async function PhasesPage({ searchParams }: { searchParams: SP })
   return (
     <>
       <PageTitle title="Phases and round control" sub="Open, pause, extend and close trading; calculate, confirm and publish results. Every action asks for a reason and is written to the audit log." />
+      {!comp.teamLoginOpen ? (
+        <div className="mb-4 rounded-lg border border-warn/40 bg-warnsoft p-3 text-sm text-warn">
+          Team login is off, so no team can trade. Switch it on in{" "}
+          <a className="underline" href="/admin/teams">
+            Registered teams
+          </a>{" "}
+          before you open a phase.
+        </div>
+      ) : null}
       {phases.some((p) => p.status !== "draft") ? (
         <p className="-mt-2 mb-4 text-sm text-muted">
           Finished testing? <a className="text-accent underline" href="/admin/settings#reset">Reset the competition</a> in Settings to clear every order and result and start again from Phase 1.

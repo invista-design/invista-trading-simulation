@@ -11,7 +11,7 @@ import { ensurePhaseAssetRows, getAssets, getPhases } from "./core";
 import { submitOrder } from "./orders";
 import * as P from "./phases";
 import { resetCompetition } from "./reset";
-import { TeamError, changeTeamCode, createTeam, readTeamForm, setRegistrationOpen, setTeamLogin, updateTeamDetails, validateTeamForm, type FieldErrors, type TeamFormValues } from "./teams";
+import { TeamError, changeTeamCode, createTeam, readTeamForm, setRegistrationOpen, setTeamLogin, setTeamLoginOpen, updateTeamDetails, validateTeamForm, type FieldErrors, type TeamFormValues } from "./teams";
 
 // ---------- helpers ----------
 const str = (fd: FormData, k: string) => String(fd.get(k) ?? "").trim();
@@ -144,6 +144,15 @@ export async function setLoginAccess(fd: FormData) {
     const active = str(fd, "active") === "true";
     const name = await setTeamLogin(teamId, active, actor, reason);
     return active ? `Login access switched on for ${name}` : `Login access switched off for ${name}. The team was signed out`;
+  });
+}
+
+export async function setTeamLoginForAll(fd: FormData) {
+  return act("/admin/teams", async (actor) => {
+    const reason = reasonOf(fd);
+    const open = str(fd, "open") === "true";
+    const signedOut = await setTeamLoginOpen(open, actor, reason);
+    return open ? "Team login is on. Teams can log in with their team name and code" : `Team login is off. ${signedOut} active team sessions were signed out`;
   });
 }
 

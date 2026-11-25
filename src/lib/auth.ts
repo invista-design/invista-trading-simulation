@@ -93,8 +93,16 @@ export async function login(username: string, password: string): Promise<LoginRe
 }
 
 /** Team sign-in with the registered team name (case and extra spaces ignored) and the team code. */
+export const TEAM_LOGIN_CLOSED = "Team login is not open yet. The organisers will open it before the competition starts";
+
+export async function teamLoginOpen(): Promise<boolean> {
+  const [c] = await getDb().select({ open: schema.competition.teamLoginOpen }).from(schema.competition).limit(1);
+  return Boolean(c?.open);
+}
+
 export async function loginTeam(teamName: string, code: string): Promise<LoginResult> {
   const db = getDb();
+  if (!(await teamLoginOpen())) return { ok: false, message: TEAM_LOGIN_CLOSED };
   const generic = "Team name or team code is incorrect";
   const rows = await db
     .select({ team: schema.teams, user: schema.users })
@@ -136,6 +144,8 @@ export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
     .limit(1);
   const u = rows[0];
   if (!u || !u.active) return null;
+  // While team login is switched off, team sessions count as signed out everywhere, including the order and status endpoints.
+  if (u.role === "team" && !(await teamLoginOpen())) return null;
   return { id: u.id, username: u.username, role: u.role, teamId: u.teamId, displayName: u.displayName };
 });
 

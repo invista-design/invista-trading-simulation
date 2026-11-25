@@ -4,7 +4,7 @@ import { AdminTeamForm } from "@/components/admin-team-form";
 import { Badge, Card, Empty, Notice, PageTitle, ReasonField, Stat, sp, type SP } from "@/components/ui";
 import { getDb, schema } from "@/db";
 import { dateTime, nameKey, phone } from "@/lib/format";
-import { setRegistration } from "@/server/admin-actions";
+import { setRegistration, setTeamLoginForAll } from "@/server/admin-actions";
 import { registrationState } from "@/server/teams";
 
 export const metadata = { title: "Registered teams" };
@@ -29,7 +29,7 @@ export default async function TeamsPage({ searchParams }: { searchParams: SP }) 
 
   return (
     <>
-      <PageTitle title="Registered teams" sub="Teams register themselves on the website and log in with their team name and team code." />
+      <PageTitle title="Registered teams" sub="Teams register on the website. Give each team its code in person; teams log in with their team name and code while team login is on." />
       <Notice ok={sp(q.ok)} err={sp(q.err)} />
 
       <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -38,6 +38,26 @@ export default async function TeamsPage({ searchParams }: { searchParams: SP }) 
         <Stat label="Teams with 2 members" value={two} />
         <Stat label="Teams with 3 members" value={three} />
       </div>
+
+      <Card title="Team login for all teams" className="mb-4">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="text-sm">
+            <div className={`font-semibold ${comp?.teamLoginOpen ? "text-up" : "text-warn"}`}>{comp?.teamLoginOpen ? "On: teams can log in" : "Off: no team can log in"}</div>
+            <div className="mt-1 max-w-2xl text-muted">
+              {comp?.teamLoginOpen
+                ? "Switching it off signs every team out at once and stops all trading until you switch it on again."
+                : "Switch it on once you have handed out the team codes. Teams see a message that login is not open yet until then."}
+            </div>
+          </div>
+          <form action={setTeamLoginForAll} className="flex flex-wrap items-end gap-2">
+            <input type="hidden" name="open" value={comp?.teamLoginOpen ? "false" : "true"} />
+            <div className="w-64">
+              <ReasonField />
+            </div>
+            <button className={`btn ${comp?.teamLoginOpen ? "btn-danger" : "btn-primary"}`}>{comp?.teamLoginOpen ? "Switch team login off" : "Switch team login on"}</button>
+          </form>
+        </div>
+      </Card>
 
       <Card title="Registration" className="mb-4">
         <div className="flex flex-wrap items-end justify-between gap-4">

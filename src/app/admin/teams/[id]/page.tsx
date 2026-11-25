@@ -87,7 +87,7 @@ export default async function TeamPage({ params, searchParams }: { params: Promi
         <div className="space-y-4">
           <Card title="Team code">
             <div className="display text-5xl font-bold tracking-[0.25em] text-gold">{t.code}</div>
-            <p className="mt-2 text-sm text-muted">The team logs in with its team name and this code.</p>
+            <p className="mt-2 text-sm text-muted">Give this code to the team in person. Teams never see it on the website before they log in.</p>
             <form action={changeCode} className="mt-4 space-y-2">
               <input type="hidden" name="teamId" value={t.id} />
               <label className="block">
@@ -97,11 +97,11 @@ export default async function TeamPage({ params, searchParams }: { params: Promi
               </label>
               <ReasonField />
               <button className="btn">Change code</button>
-              <p className="text-xs text-muted">The team is signed out at once and must log in with the new code. Tell them the new code.</p>
+              <p className="text-xs text-muted">The team is signed out at once and must log in with the new code. Give them the new code in person.</p>
             </form>
           </Card>
 
-          <Card title="Login access">
+          <Card title="This team's login">
             <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
               <dt className="text-muted">Status</dt>
               <dd>{u?.active ? "On: the team can log in" : "Off: the team cannot log in"}</dd>

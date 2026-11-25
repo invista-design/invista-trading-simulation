@@ -30,7 +30,7 @@ export default async function RegisterPage() {
             <li>Your team has 2 or 3 members. Member 3 is optional.</li>
             <li>For each member, have the full name, a 10-digit mobile number and an email ID ready.</li>
             <li>Choose a team name that no other team uses. You log in with this name.</li>
-            <li>After registering you get a team code such as K42. Your team name and this code are your login.</li>
+            <li>After you register, the organisers give your team a 3-character code, such as K42, in person. Your team name and this code are your login.</li>
           </ul>
           <p className={`mt-6 text-sm ${reg.open ? "text-up" : "text-down"}`}>
             {reg.open ? `Registration is open. ${reg.registered} of ${reg.capacity} places taken.` : `${reg.message}.`}

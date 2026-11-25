@@ -219,3 +219,18 @@ export async function setRegistrationOpen(open: boolean, actor: string, reason: 
   await db.update(schema.competition).set({ registrationOpen: open, updatedAt: new Date() });
   await audit(db, { username: actor, action: open ? "registration.open" : "registration.close", entity: "competition", reason });
 }
+
+/** Switches team login on or off for every team. Switching off also signs every team out. */
+export async function setTeamLoginOpen(open: boolean, actor: string, reason: string) {
+  const db = getDb();
+  return db.transaction(async (tx) => {
+    await tx.update(schema.competition).set({ teamLoginOpen: open, updatedAt: new Date() });
+    let signedOut = 0;
+    if (!open) {
+      const ended = await tx.execute(sql`delete from sessions s using users u where s.user_id = u.id and u.role = 'team'`);
+      signedOut = ended.rowCount ?? 0;
+    }
+    await audit(tx, { username: actor, action: open ? "team_login.open" : "team_login.close", entity: "competition", reason, after: { signedOut } });
+    return signedOut;
+  });
+}

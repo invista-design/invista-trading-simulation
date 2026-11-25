@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Brand } from "@/components/brand";
 import { Notice, sp, type SP } from "@/components/ui";
-import { getSessionUser, loginTeam } from "@/lib/auth";
+import { TEAM_LOGIN_CLOSED, getSessionUser, loginTeam, teamLoginOpen } from "@/lib/auth";
 
 export const metadata = { title: "Team login" };
 export const dynamic = "force-dynamic";
@@ -19,6 +19,8 @@ export default async function LoginPage({ searchParams }: { searchParams: SP }) 
   const q = await searchParams;
   const user = await getSessionUser().catch(() => null);
   if (user) redirect(user.role === "organiser" ? "/admin" : "/dashboard");
+  const open = await teamLoginOpen().catch(() => false);
+  const err = sp(q.err);
   return (
     <main className="flex min-h-screen items-center justify-center px-4 py-10">
       <div className="w-full max-w-sm">
@@ -26,7 +28,12 @@ export default async function LoginPage({ searchParams }: { searchParams: SP }) 
           <Brand name="Market Mayhem - Trading Simulation: Dalal Street Challenge" size={52} />
         </div>
         <h1 className="mb-4 text-center text-xl font-semibold">Team login</h1>
-        <Notice err={sp(q.err)} ok={sp(q.ok)} />
+        {!open ? (
+          <div role="status" className="mb-4 rounded-lg border border-warn/40 bg-warnsoft p-3 text-sm text-warn">
+            {TEAM_LOGIN_CLOSED}.
+          </div>
+        ) : null}
+        <Notice err={err === TEAM_LOGIN_CLOSED && !open ? undefined : err} ok={sp(q.ok)} />
         <form action={signIn} className="card space-y-4 p-6">
           <label className="block">
             <span className="field-label">Team name</span>
@@ -44,7 +51,7 @@ export default async function LoginPage({ searchParams }: { searchParams: SP }) 
               placeholder="For example K42"
               className="input uppercase tracking-[0.3em] placeholder:normal-case placeholder:tracking-normal"
             />
-            <span className="mt-1 block text-xs text-muted">The 3-character code you received when you registered</span>
+            <span className="mt-1 block text-xs text-muted">The 3-character code the organisers gave your team</span>
           </label>
           <button className="btn btn-primary w-full">Log in</button>
         </form>
