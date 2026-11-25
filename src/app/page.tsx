@@ -56,8 +56,8 @@ export default async function Landing() {
                 </dl>
                 {data.comp.prizePool ? (
                   <div className="prize mt-6 max-w-xl rounded-2xl p-[1.5px]">
-                    <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 rounded-[calc(1rem-1.5px)] bg-panel px-6 py-5">
-                      <span className="text-sm font-medium text-muted">Prize pool</span>
+                    <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 rounded-[calc(1rem-1.5px)] bg-panel px-6 py-5">
+                      <span className="display text-2xl font-semibold leading-none tracking-wide text-ink sm:text-3xl">Prize Pool</span>
                       <span className="prize-amount display text-5xl font-bold leading-none sm:text-6xl">{data.comp.prizePool}</span>
                     </div>
                   </div>
